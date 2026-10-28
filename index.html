@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Pillion: share the empty seat on your bike and split the fuel cost.">
+<title>Pillion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Hind:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one narrow column, three tabs (find / offer / my trips) plus a login view. Ride cards read like a highway sign: time, a dotted route line, then fare. */
+:root {
+  color-scheme: light dark;
+  --bg: #F2F3EE;
+  --surface: #FFFFFF;
+  --fg: #151A18;
+  --muted: #56615B;
+  --line: #D7DCD3;
+  --line-strong: #A9B3AA;
+  --accent: #0B6B4F;
+  --accent-fg: #FFFFFF;
+  --ok: #1B6B45;
+  --ok-bg: #DDF0E4;
+  --warn: #8A4B08;
+  --warn-bg: #FBEBCF;
+  --danger: #B42318;
+  --font-display: 'Bricolage Grotesque', 'Hind', system-ui, sans-serif;
+  --font-body: 'Hind', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121715;
+    --surface: #1B2220;
+    --fg: #ECF0EA;
+    --muted: #9AA7A0;
+    --line: #2C3633;
+    --line-strong: #4A5853;
+    --accent: #3FB88C;
+    --accent-fg: #06140E;
+    --ok: #7FD6A4;
+    --ok-bg: #17322A;
+    --warn: #F2C072;
+    --warn-bg: #3A2C12;
+    --danger: #FF9A8F;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: max(20px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(48px, env(safe-area-inset-bottom, 0px));
+}
+.wrap { max-width: 860px; margin: 0 auto; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
+button, input, select { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.mark { width: 40px; height: 40px; border-radius: 8px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; flex: none; }
+.mark svg { width: 26px; height: 26px; }
+.brand h1 { font-size: 26px; line-height: 1.1; letter-spacing: -0.01em; }
+.brand p { color: var(--muted); font-size: 14px; }
+.who { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+.who b { color: var(--fg); font-weight: 600; }
+.banner { margin-top: 16px; padding: 12px 14px; border-radius: 6px; background: var(--warn-bg); color: var(--warn); font-size: 14px; }
+.banner code { font-family: var(--font-mono); }
+
+/* tabs */
+.tabs { display: flex; gap: 4px; margin-top: 20px; padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.tab { flex: 1; min-width: 0; padding: 10px 8px; border: 0; background: transparent; border-radius: 5px; font-weight: 600; cursor: pointer; color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-fg); }
+.tab:hover:not([aria-selected="true"]) { color: var(--fg); }
+
+/* panels and forms */
+.panel { margin-top: 24px; }
+.panel > h2 { font-size: 22px; }
+.lede { color: var(--muted); margin-top: 2px; }
+.form { margin-top: 16px; display: grid; gap: 14px; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field > label { font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--muted); }
+.field .hint { font-size: 12px; color: var(--muted); }
+.input { width: 100%; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); min-width: 0; }
+.check { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); flex: none; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.auth { max-width: 440px; }
+.switch { margin-top: 14px; font-size: 14px; color: var(--muted); }
+
+.btn { padding: 10px 16px; border-radius: 6px; border: 1px solid var(--line-strong); background: var(--surface); font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+.btn:hover { border-color: var(--fg); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.danger { color: var(--danger); }
+.btn.small { padding: 6px 12px; font-size: 14px; }
+.btn:disabled { opacity: 0.55; cursor: default; }
+.linkbtn { color: var(--accent); font-weight: 600; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+
+.preview { font-family: var(--font-mono); font-size: 13px; color: var(--muted); padding: 10px 12px; background: var(--surface); border: 1px dashed var(--line-strong); border-radius: 6px; }
+.preview strong { color: var(--fg); font-weight: 500; }
+.msg { color: var(--danger); font-size: 14px; min-height: 1.4em; }
+
+/* ride cards */
+.result-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin: 24px 0 10px; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.subhead { margin: 22px 0 10px; font-size: 16px; }
+.list { display: grid; gap: 12px; }
+.empty { padding: 20px; border: 1px dashed var(--line-strong); border-radius: 8px; color: var(--muted); }
+.empty .chips { margin-top: 12px; }
+.loading { padding: 20px; color: var(--muted); font-family: var(--font-mono); font-size: 13px; }
+
+.ride { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; }
+.ride.past { opacity: 0.7; }
+.ride-main { min-width: 0; display: grid; gap: 10px; }
+.time { font-family: var(--font-display); font-weight: 700; font-size: 26px; line-height: 1; letter-spacing: -0.01em; }
+.time small { font-size: 14px; font-weight: 600; margin-left: 2px; }
+.day { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-left: 8px; }
+.route { position: relative; padding-left: 22px; }
+.stop { position: relative; font-weight: 500; overflow-wrap: anywhere; }
+.stop::before { content: ""; position: absolute; left: -22px; top: 0.55em; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--accent); background: var(--surface); }
+.stop.dest::before { background: var(--accent); }
+.leg { position: relative; padding: 4px 0; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.leg::before { content: ""; position: absolute; left: -18px; top: 0; bottom: 0; border-left: 2px dotted var(--line-strong); }
+.rider { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 14px; color: var(--muted); }
+.rider b { color: var(--fg); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--line-strong); color: var(--muted); }
+.chip.ok { background: var(--ok-bg); border-color: transparent; color: var(--ok); }
+.chip.warn { background: var(--warn-bg); border-color: transparent; color: var(--warn); }
+.ride-aside { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 10px; text-align: right; }
+.fare { font-family: var(--font-mono); font-weight: 500; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; }
+.fare-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.seat { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.contact { font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding-top: 10px; border-top: 1px dashed var(--line-strong); }
+.contact a.tel { color: var(--accent); font-weight: 600; font-family: var(--font-mono); text-decoration: none; }
+.contact a.share { color: var(--muted); }
+
+.book { grid-column: 1 / -1; border-top: 1px dashed var(--line-strong); padding-top: 14px; display: grid; gap: 12px; }
+dl.sum { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; margin: 0; max-width: 380px; font-size: 15px; }
+dl.sum dd { margin: 0; text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padding-top: 6px; margin-top: 2px; }
+.small-note { font-size: 13px; color: var(--muted); }
+
+@media (max-width: 560px) {
+  .ride { grid-template-columns: minmax(0, 1fr); }
+  .ride-aside { flex-direction: row; align-items: center; justify-content: space-between; text-align: left; }
+  .ride-aside .fare-note { display: none; }
+}
+
+/* safety + footer */
+.safety { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--line-strong); }
+.safety h2 { font-size: 18px; }
+.checks { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px 24px; }
+.checks h3 { font-size: 15px; }
+.checks p { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.foot { margin-top: 24px; font-size: 13px; color: var(--muted); max-width: 65ch; }
+
+.toast { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: 420px; margin: 0 auto; background: var(--fg); color: var(--bg); padding: 12px 16px; border-radius: 6px; font-weight: 500; z-index: 20; }
+@media (prefers-reduced-motion: no-preference) {
+  .ride { transition: border-color 0.15s; }
+  .ride:hover { border-color: var(--line-strong); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="22" r="4"/><circle cx="24" cy="22" r="4"/><path d="M8 22l6-10h5l5 10M14 12l-2-3H9M19 12l3 4"/></svg>
+      </span>
+      <div>
+        <h1>Pillion</h1>
+        <p>Share the empty seat on your bike</p>
+      </div>
+    </div>
+    <div class="who" id="who"></div>
+  </header>
+
+  <div class="banner" id="setup-banner" hidden>
+    The site is not connected yet. Open <code>config.js</code>, paste your Apps Script Web app URL, and reload.
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-find" data-tab="find" aria-selected="true">Find a ride</button>
+    <button class="tab" role="tab" id="tab-offer" data-tab="offer" aria-selected="false">Offer a ride</button>
+    <button class="tab" role="tab" id="tab-trips" data-tab="trips" aria-selected="false">My trips</button>
+  </nav>
+
+  <main>
+    <section class="panel" id="view-find" aria-labelledby="tab-find">
+      <h2>Where are you going?</h2>
+      <p class="lede">Riders already heading your way, with one seat free behind them.</p>
+      <form class="form" id="find-form" autocomplete="off">
+        <div class="fields">
+          <div class="field"><label for="f-from">From</label><select class="input" id="f-from"></select></div>
+          <div class="field"><label for="f-to">To</label><select class="input" id="f-to"></select></div>
+          <div class="field"><label for="f-day">Date</label><input class="input" type="date" id="f-day" required></div>
+          <div class="field"><label for="f-window">Time</label>
+            <select class="input" id="f-window"><option value="any">Any time</option><option value="morning">Morning (before 12)</option><option value="evening">Evening (after 3 pm)</option></select></div>
+        </div>
+        <div class="actions">
+          <label class="check" for="f-women"><input type="checkbox" id="f-women"> Women-only rides</label>
+          <label class="check" for="f-all"><input type="checkbox" id="f-all"> Show all routes</label>
+          <button type="button" class="btn small" data-action="swap">Swap from and to</button>
+        </div>
+      </form>
+      <div id="results" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" id="view-offer" aria-labelledby="tab-offer" hidden>
+      <h2>Going somewhere anyway?</h2>
+      <p class="lede">Post your trip. Passengers share your fuel cost, nothing more.</p>
+      <form class="form" id="offer-form" autocomplete="off">
+        <div class="fields">
+          <div class="field"><label for="o-from">From</label><select class="input" id="o-from"></select></div>
+          <div class="field"><label for="o-to">To</label><select class="input" id="o-to"></select></div>
+          <div class="field"><label for="o-day">Date</label><input class="input" type="date" id="o-day" required></div>
+          <div class="field"><label for="o-time">Leaving at</label><input class="input" type="time" id="o-time" value="08:30" required></div>
+          <div class="field"><label for="o-bike">Your bike</label><input class="input" type="text" id="o-bike" value="" placeholder="Honda Shine" maxlength="40"></div>
+        </div>
+        <div class="actions">
+          <label class="check" for="o-helmet"><input type="checkbox" id="o-helmet" checked> I carry a spare helmet</label>
+          <label class="check" for="o-women"><input type="checkbox" id="o-women"> Women passengers only</label>
+        </div>
+        <div class="preview" id="offer-preview"></div>
+        <p class="msg" id="offer-msg" role="alert"></p>
+        <div class="actions"><button type="submit" class="btn primary" id="offer-submit">Post this ride</button></div>
+      </form>
+    </section>
+
+    <section class="panel" id="view-trips" aria-labelledby="tab-trips" hidden>
+      <h2>My trips</h2>
+      <div id="trips"></div>
+    </section>
+
+    <section class="panel auth" id="view-login" hidden>
+      <div id="auth-box"></div>
+    </section>
+  </main>
+
+  <section class="safety" aria-labelledby="safety-h">
+    <h2 id="safety-h">Before you ride</h2>
+    <ul class="checks">
+      <li><h3>Helmet for both</h3><p>Every ride says if a spare helmet is carried. If not, bring your own.</p></li>
+      <li><h3>Contact after booking</h3><p>Phone numbers stay hidden until a seat is booked. Then rider and passenger see each other's number.</p></li>
+      <li><h3>Women-only rides</h3><p>Women riders can limit a ride to women passengers, and passengers can filter for those rides.</p></li>
+      <li><h3>Cost sharing only</h3><p>Fares stay near fuel cost, so a ride is not a taxi trip. Pay the rider by UPI when you meet.</p></li>
+    </ul>
+    <p class="foot">Distances are straight-line estimates plus 30% for roads. Share your trip details with someone you trust before you ride. Before a public launch, check Motor Vehicles Act rules on paid rides in private vehicles and what a two-wheeler insurance policy covers for a pillion passenger.</p>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  'use strict';
+  var API_URL = String(window.PILLION_API || '').trim();
+  var SESSION_KEY = 'pillion.session';
+  var TABS = ['find', 'offer', 'trips', 'login'];
+
+  var state = {
+    tab: 'find', cfg: null, session: null, authMode: 'login',
+    filters: { from: '', to: '', date: '', window: 'any', women: false, all: false },
+    openBook: null, pending: null, searchSeq: 0, trips: null, confirmKey: null, lastResult: null
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function rs(n) { return '₹' + n; }
+  function isoDate(n) {
+    var d = new Date(); d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function dayLabel(iso) {
+    if (iso === isoDate(0)) return 'Today';
+    if (iso === isoDate(1)) return 'Tomorrow';
+    var p = iso.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
+    return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+  function fmtTime(t) {
+    var p = t.split(':'), h = +p[0];
+    return { t: (((h + 11) % 12) + 1) + ':' + p[1], ap: h >= 12 ? 'pm' : 'am' };
+  }
+  function fmtPhone(p) { return p && p.length === 10 ? '+91 ' + p.slice(0, 5) + ' ' + p.slice(5) : p; }
+  function byTime(a, b) { return a.time < b.time ? -1 : a.time > b.time ? 1 : 0; }
+
+  function toast(text) {
+    var t = $('toast');
+    t.textContent = text; t.hidden = false;
+    clearTimeout(toast._h);
+    toast._h = setTimeout(function () { t.hidden = true; }, 3600);
+  }
+
+  // ---------- session ----------
+  function loadSession() {
+    try {
+      var s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+      if (s && s.token && s.user) state.session = s;
+    } catch (e) {}
+  }
+  function saveSession() {
+    try {
+      if (state.session) localStorage.setItem(SESSION_KEY, JSON.stringify(state.session));
+      else localStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
+  function logout(expired) {
+    state.session = null; state.trips = null; state.openBook = null;
+    saveSession(); renderWho();
+    if (expired) { toast('Please log in again.'); state.pending = { tab: state.tab === 'login' ? 'find' : state.tab }; setTab('login'); }
+    else { toast('Logged out.'); setTab('find'); }
+  }
+
+  // ---------- API ----------
+  function call(action, payload) {
+    if (!API_URL) return Promise.reject(new Error('Add your Apps Script URL in config.js first.'));
+    var body = Object.assign({ action: action }, payload || {});
+    if (state.session) body.token = state.session.token;
+    // A plain-text body avoids the browser preflight request that Apps Script cannot answer.
+    return fetch(API_URL, { method: 'POST', body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j.ok) { var e = new Error(j.error || 'Request failed.'); e.code = j.code || ''; throw e; }
+        return j.data;
+      })
+      .catch(function (e) {
+        if (e && e.code === 'AUTH') { logout(true); }
+        if (e instanceof TypeError) e = new Error('Could not reach the server. Check your internet and try again.');
+        else if (e instanceof SyntaxError) e = new Error('The server sent an unexpected reply. Check that the Apps Script web app is deployed with access set to Anyone.');
+        throw e;
+      });
+  }
+
+  // ---------- places, fares ----------
+  function placeName(id) {
+    var ps = state.cfg ? state.cfg.places : [];
+    for (var i = 0; i < ps.length; i++) if (ps[i].id === id) return ps[i].name;
+    return id;
+  }
+  function placeOptions(sel, val) {
+    sel.innerHTML = state.cfg.places.map(function (p) {
+      return '<option value="' + esc(p.id) + '"' + (p.id === val ? ' selected' : '') + '>' + esc(p.name) + '</option>';
+    }).join('');
+  }
+  function estimate(a, b) {
+    var c = state.cfg, A, B, i;
+    for (i = 0; i < c.places.length; i++) { if (c.places[i].id === a) A = c.places[i]; if (c.places[i].id === b) B = c.places[i]; }
+    if (!A || !B) return null;
+    var rad = Math.PI / 180, dLat = (B.lat - A.lat) * rad, dLng = (B.lng - A.lng) * rad;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(A.lat * rad) * Math.cos(B.lat * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    var km = Math.max(2, Math.round(2 * 6371 * Math.asin(Math.sqrt(h)) * c.roadFactor));
+    return { km: km, fare: Math.max(c.minFare, Math.round(km * c.rate / 5) * 5) };
+  }
+
+  // ---------- pieces of HTML ----------
+  function chipsHtml(r, extra) {
+    var c = [];
+    c.push(r.helmet ? '<span class="chip ok">Spare helmet</span>' : '<span class="chip warn">Bring your helmet</span>');
+    if (r.womenOnly) c.push('<span class="chip">Women only</span>');
+    (extra || []).forEach(function (x) { c.push(x); });
+    return '<div class="chips">' + c.join('') + '</div>';
+  }
+  function routeHtml(r) {
+    return '<div class="route"><div class="stop">' + esc(r.from.name) + '</div><div class="leg">' + r.km + ' km</div><div class="stop dest">' + esc(r.to.name) + '</div></div>';
+  }
+  function whenHtml(r) {
+    var tm = fmtTime(r.time);
+    return '<div><span class="time">' + tm.t + '<small>' + tm.ap + '</small></span><span class="day">' + esc(dayLabel(r.date)) + '</span></div>';
+  }
+  function phoneLink(p) { return '<a class="tel" href="tel:+91' + esc(p) + '">' + esc(fmtPhone(p)) + '</a>'; }
+
+  function rideCard(r) {
+    var open = state.openBook === r.id;
+    var aside, panel = '';
+    if (r.mine) {
+      aside = '<div><div class="fare">' + rs(r.fare) + '</div><div class="fare-note">per seat</div></div><span class="chip">Your ride</span>';
+    } else {
+      aside = '<div><div class="fare">' + rs(r.fare) + '</div><div class="fare-note">+ ' + rs(r.fee) + ' fee</div></div>' +
+        '<div><div class="seat">1 seat left</div><button class="btn primary small" data-action="book" data-id="' + esc(r.id) + '">Book seat</button></div>';
+    }
+    if (open && !r.mine) {
+      panel = '<div class="book"><dl class="sum"><dt>Rider\'s fuel share</dt><dd>' + rs(r.fare) + '</dd><dt>Platform fee</dt><dd>' + rs(r.fee) + '</dd><dt class="total">Total</dt><dd class="total">' + rs(r.fare + r.fee) + '</dd></dl>' +
+        '<p class="small-note">' + (r.helmet ? 'The rider carries a spare helmet.' : 'This rider has no spare helmet. Bring your own.') + ' Pay by UPI when you meet. You will see the rider\'s number after booking.</p>' +
+        '<div class="actions"><button class="btn primary" data-action="confirm" data-id="' + esc(r.id) + '">Confirm booking</button><button class="btn" data-action="dismiss">Not now</button></div></div>';
+    }
+    var who = r.mine ? '<b>You</b>' : '<b>' + esc(r.riderName) + '</b>';
+    var extra = r.riderKyc ? ['<span class="chip">KYC verified</span>'] : [];
+    return '<article class="ride"><div class="ride-main">' + whenHtml(r) + routeHtml(r) +
+      '<div class="rider">' + who + '<span>' + esc(r.bike) + '</span></div>' + chipsHtml(r, extra) + '</div>' +
+      '<div class="ride-aside">' + aside + '</div>' + panel + '</article>';
+  }
+
+  // ---------- find ----------
+  function readFilters() {
+    state.filters = {
+      from: $('f-from').value, to: $('f-to').value, date: $('f-day').value,
+      window: $('f-window').value, women: $('f-women').checked, all: $('f-all').checked
+    };
+    state.openBook = null;
+    runSearch();
+  }
+  var searchTimer = null;
+  function runSearchSoon() { clearTimeout(searchTimer); searchTimer = setTimeout(readFilters, 150); }
+
+  function runSearch() {
+    var f = state.filters, box = $('results');
+    if (!state.cfg) return;
+    if (!f.date) { box.innerHTML = '<div class="empty" style="margin-top:24px">Pick a date to see rides.</div>'; return; }
+    if (f.from === f.to && !f.all) { box.innerHTML = '<div class="empty" style="margin-top:24px">Pick two different places to see rides.</div>'; return; }
+    var seq = ++state.searchSeq;
+    box.innerHTML = '<div class="loading">Loading rides…</div>';
+    call('search', { from: f.from, to: f.to, date: f.date, window: f.window, women: f.women, all: f.all })
+      .then(function (d) { if (seq === state.searchSeq) renderResults(d); })
+      .catch(function (e) {
+        if (seq !== state.searchSeq) return;
+        box.innerHTML = '<div class="empty" style="margin-top:24px">' + esc(e.message) + ' <button class="linkbtn" data-action="retry">Try again</button></div>';
+      });
+  }
+
+  function renderResults(d) {
+    state.lastResult = d;
+    var f = state.filters, box = $('results');
+    var exact = d.rides.filter(function (r) { return r.from.id === f.from && r.to.id === f.to; }).sort(byTime);
+    var close = d.rides.filter(function (r) { return !(r.from.id === f.from && r.to.id === f.to) && (r.from.id === f.from || r.to.id === f.to); }).sort(byTime);
+    var rest = d.rides.filter(function (r) { return r.from.id !== f.from && r.to.id !== f.to; }).sort(byTime);
+
+    var html = '<div class="result-head"><span>' + exact.length + (exact.length === 1 ? ' ride' : ' rides') + ' · ' + esc(placeName(f.from)) + ' → ' + esc(placeName(f.to)) + '</span><span>' + esc(dayLabel(f.date)) + '</span></div>';
+    if (exact.length) {
+      html += '<div class="list">' + exact.map(rideCard).join('') + '</div>';
+    } else {
+      var od = d.otherDates || [];
+      html += '<div class="empty">No rides on this route for ' + esc(dayLabel(f.date)) + '. <button class="linkbtn" data-action="offer-this">Offer one yourself</button> and passengers will find it here.' +
+        (od.length ? '<div class="chips">' + od.map(function (x) { return '<button class="btn small" data-action="pick-date" data-date="' + esc(x) + '">' + esc(dayLabel(x)) + '</button>'; }).join('') + '</div><p class="small-note" style="margin-top:6px">Rides on this route on other dates.</p>' : '') + '</div>';
+    }
+    if (close.length) html += '<h3 class="subhead">Close matches</h3><div class="list">' + close.map(rideCard).join('') + '</div>';
+    if (rest.length) html += '<h3 class="subhead">Other routes</h3><div class="list">' + rest.map(rideCard).join('') + '</div>';
+    box.innerHTML = html;
+  }
+
+  // ---------- trips ----------
+  function statusChip(s, past) {
+    if (s === 'confirmed') return past ? '<span class="chip">Completed</span>' : '<span class="chip ok">Confirmed</span>';
+    if (s === 'cancelled') return '<span class="chip warn">Cancelled</span>';
+    if (s === 'rider_cancelled') return '<span class="chip warn">Cancelled by rider</span>';
+    if (s === 'booked') return past ? '<span class="chip">Completed</span>' : '<span class="chip ok">Seat booked</span>';
+    return past ? '<span class="chip">Expired</span>' : '<span class="chip">Seat open</span>';
+  }
+  function cancelBtn(key, id, label) {
+    var armed = state.confirmKey === key + ':' + id;
+    return '<button class="btn small danger" data-action="' + key + '" data-id="' + esc(id) + '">' + (armed ? 'Tap again to cancel' : label) + '</button>';
+  }
+
+  function renderTrips() {
+    var box = $('trips');
+    if (!state.trips) { box.innerHTML = '<div class="loading">Loading your trips…</div>'; return; }
+    var t = state.trips, html = '<h3 class="subhead">Seats you booked</h3>';
+    if (t.bookings.length) {
+      html += '<div class="list">' + t.bookings.map(function (b) {
+        var r = b.ride, live = b.status === 'confirmed' && !r.past;
+        var contact = '';
+        if (b.status === 'confirmed' && b.rider) {
+          var share = 'My Pillion ride: ' + r.from.name + ' to ' + r.to.name + ', ' + dayLabel(r.date) + ' ' + fmtTime(r.time).t + ' ' + fmtTime(r.time).ap +
+            ', with ' + b.rider.name + ' (' + fmtPhone(b.rider.phone) + '), ' + r.bike + '.';
+          contact = '<div class="contact"><span>Rider ' + esc(b.rider.name) + '</span>' + phoneLink(b.rider.phone) +
+            '<a class="share" href="https://wa.me/?text=' + encodeURIComponent(share) + '" target="_blank" rel="noopener">Share trip on WhatsApp</a></div>';
+        }
+        var extra = [statusChip(b.status, r.past)];
+        if (b.rider && b.rider.kyc) extra.push('<span class="chip">KYC verified</span>');
+        return '<article class="ride' + (r.past || b.status !== 'confirmed' ? ' past' : '') + '"><div class="ride-main">' + whenHtml(r) + routeHtml(r) +
+          '<div class="rider"><b>' + esc(b.rider ? b.rider.name : 'Rider') + '</b><span>' + esc(r.bike) + '</span></div>' + chipsHtml(r, extra) + contact + '</div>' +
+          '<div class="ride-aside"><div><div class="fare">' + rs(b.total) + '</div><div class="fare-note">pay at pickup</div></div>' +
+          (live ? '<div>' + cancelBtn('cancel-booking', b.id, 'Cancel booking') + '</div>' : '<span></span>') + '</div></article>';
+      }).join('') + '</div>';
+    } else {
+      html += '<div class="empty">No seats booked yet. <button class="linkbtn" data-action="go-find">Find a ride</button></div>';
+    }
+    html += '<h3 class="subhead">Rides you offered</h3>';
+    if (t.offered.length) {
+      html += '<div class="list">' + t.offered.map(function (r) {
+        var contact = '';
+        if (r.passenger) contact = '<div class="contact"><span>Passenger ' + esc(r.passenger.name) + '</span>' + phoneLink(r.passenger.phone) + '</div>';
+        return '<article class="ride' + (r.past ? ' past' : '') + '"><div class="ride-main">' + whenHtml(r) + routeHtml(r) +
+          '<div class="rider"><b>You</b><span>' + esc(r.bike) + '</span></div>' + chipsHtml(r, [statusChip(r.status, r.past)]) + contact + '</div>' +
+          '<div class="ride-aside"><div><div class="fare">' + rs(r.fare) + '</div><div class="fare-note">per seat</div></div>' +
+          (r.past ? '<span></span>' : '<div>' + cancelBtn('cancel-ride', r.id, 'Cancel ride') + '</div>') + '</div></article>';
+      }).join('') + '</div>';
+    } else {
+      html += '<div class="empty">You have not posted a ride. <button class="linkbtn" data-action="go-offer">Offer a ride</button></div>';
+    }
+    box.innerHTML = html;
+  }
+
+  function loadTrips() {
+    state.trips = null; renderTrips();
+    call('myTrips').then(function (d) { state.trips = d; if (state.tab === 'trips') renderTrips(); })
+      .catch(function (e) { $('trips').innerHTML = '<div class="empty">' + esc(e.message) + ' <button class="linkbtn" data-action="retry">Try again</button></div>'; });
+  }
+
+  // ---------- login / register ----------
+  function renderAuth(msg) {
+    var reg = state.authMode === 'register';
+    var html = '<h2>' + (reg ? 'Create your account' : 'Log in') + '</h2>' +
+      '<p class="lede">' + (reg ? 'Your number stays hidden until a seat is booked.' : 'Use your mobile number and PIN.') + '</p>' +
+      '<form class="form" id="auth-form" autocomplete="on"><div class="fields" style="grid-template-columns:1fr">' +
+      (reg ? '<div class="field"><label for="a-name">Your name</label><input class="input" id="a-name" type="text" autocomplete="name" maxlength="40" required></div>' : '') +
+      '<div class="field"><label for="a-phone">Mobile number</label><input class="input" id="a-phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210" maxlength="16" required></div>' +
+      (reg ? '<div class="field"><label for="a-gender">Gender</label><select class="input" id="a-gender" required><option value="">Select</option><option value="female">Female</option><option value="male">Male</option><option value="other">Prefer not to say</option></select><span class="hint">Used only for women-only rides.</span></div>' : '') +
+      '<div class="field"><label for="a-pin">PIN' + (reg ? ' (4 to 6 digits)' : '') + '</label><input class="input" id="a-pin" type="password" inputmode="numeric" autocomplete="' + (reg ? 'new-password' : 'current-password') + '" maxlength="6" required></div>' +
+      '</div><p class="msg" id="auth-msg" role="alert">' + esc(msg || '') + '</p>' +
+      '<div class="actions"><button type="submit" class="btn primary" id="auth-submit">' + (reg ? 'Create account' : 'Log in') + '</button></div></form>' +
+      '<p class="switch">' + (reg ? 'Already registered? <button class="linkbtn" data-action="auth-mode" data-mode="login">Log in</button>' : 'New here? <button class="linkbtn" data-action="auth-mode" data-mode="register">Create an account</button>') + '</p>';
+    $('auth-box').innerHTML = html;
+  }
+
+  function onAuthed(d) {
+    state.session = { token: d.token, user: d.user };
+    saveSession(); renderWho();
+    toast('Welcome, ' + d.user.name.split(' ')[0] + '.');
+    var next = state.pending; state.pending = null;
+    if (next && next.bookId) state.openBook = next.bookId;
+    setTab(next ? next.tab : 'find');
+  }
+
+  // ---------- chrome around the page ----------
+  function renderWho() {
+    $('who').innerHTML = state.session
+      ? '<span>Hi, <b>' + esc(state.session.user.name.split(' ')[0]) + '</b></span><button class="btn small" data-action="logout">Log out</button>'
+      : '<button class="btn small" data-action="go-login">Log in</button>';
+  }
+
+  function renderOfferPreview() {
+    var a = $('o-from').value, b = $('o-to').value, p = $('offer-preview');
+    if (a === b) { p.textContent = 'Pick two different places.'; return; }
+    var e = estimate(a, b);
+    p.innerHTML = e ? '<strong>' + e.km + ' km</strong> · fare <strong>' + rs(e.fare) + '</strong> per seat · based on ' + rs(state.cfg.rate) + ' per km fuel cost' : '';
+  }
+
+  function render() {
+    TABS.forEach(function (t) {
+      var tabBtn = $('tab-' + t);
+      if (tabBtn) tabBtn.setAttribute('aria-selected', String(state.tab === t));
+      $('view-' + t).hidden = state.tab !== t;
+    });
+    if (state.tab === 'find') runSearch();
+    if (state.tab === 'offer' && state.cfg) renderOfferPreview();
+    if (state.tab === 'trips') loadTrips();
+    if (state.tab === 'login') renderAuth();
+  }
+
+  function setTab(t) {
+    if ((t === 'offer' || t === 'trips') && !state.session) { state.pending = { tab: t }; t = 'login'; state.authMode = 'login'; }
+    state.tab = t;
+    try { if (location.hash !== '#' + t) location.hash = t; } catch (e) {}
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- events ----------
+  document.addEventListener('click', function (e) {
+    var tab = e.target.closest('[data-tab]');
+    if (tab) { state.openBook = null; setTab(tab.getAttribute('data-tab')); return; }
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var act = el.getAttribute('data-action'), id = el.getAttribute('data-id');
+
+    if (act === 'swap') {
+      var a = $('f-from').value; $('f-from').value = $('f-to').value; $('f-to').value = a; readFilters();
+    } else if (act === 'book') {
+      if (!state.session) { state.pending = { tab: 'find', bookId: id }; state.authMode = 'login'; setTab('login'); return; }
+      state.openBook = id; runSearchFromCache();
+    } else if (act === 'dismiss') {
+      state.openBook = null; runSearchFromCache();
+    } else if (act === 'confirm') {
+      el.disabled = true; el.textContent = 'Booking…';
+      call('book', { rideId: id }).then(function () {
+        state.openBook = null; toast('Seat booked. The rider\'s number is in My trips.'); setTab('trips');
+      }).catch(function (err) { toast(err.message); state.openBook = null; runSearch(); });
+    } else if (act === 'cancel-booking' || act === 'cancel-ride') {
+      var key = act + ':' + id;
+      if (state.confirmKey !== key) { state.confirmKey = key; renderTrips(); return; }
+      state.confirmKey = null; el.disabled = true;
+      call(act === 'cancel-booking' ? 'cancelBooking' : 'cancelRide', act === 'cancel-booking' ? { bookingId: id } : { rideId: id })
+        .then(function () { toast(act === 'cancel-booking' ? 'Booking cancelled.' : 'Ride cancelled.'); loadTrips(); })
+        .catch(function (err) { toast(err.message); loadTrips(); });
+    } else if (act === 'pick-date') {
+      $('f-day').value = el.getAttribute('data-date'); readFilters();
+    } else if (act === 'offer-this') {
+      $('o-from').value = state.filters.from; $('o-to').value = state.filters.to; $('o-day').value = state.filters.date;
+      setTab('offer');
+    } else if (act === 'go-find') { setTab('find'); }
+    else if (act === 'go-offer') { setTab('offer'); }
+    else if (act === 'go-login') { state.pending = { tab: 'find' }; state.authMode = 'login'; setTab('login'); }
+    else if (act === 'auth-mode') { state.authMode = el.getAttribute('data-mode'); renderAuth(); }
+    else if (act === 'logout') { logout(false); }
+    else if (act === 'retry') { render(); }
+  });
+
+  // The last search result is kept so opening the booking panel does not hit the server again.
+  function runSearchFromCache() { if (state.lastResult) renderResults(state.lastResult); else runSearch(); }
+
+  ['f-from', 'f-to', 'f-day', 'f-window', 'f-women', 'f-all'].forEach(function (id) { $(id).addEventListener('change', runSearchSoon); });
+  ['o-from', 'o-to'].forEach(function (id) { $(id).addEventListener('change', function () { if (state.cfg) renderOfferPreview(); }); });
+  $('find-form').addEventListener('submit', function (e) { e.preventDefault(); });
+
+  $('offer-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = $('offer-msg'), btn = $('offer-submit');
+    var from = $('o-from').value, to = $('o-to').value, day = $('o-day').value, time = $('o-time').value;
+    if (from === to) { msg.textContent = 'Pick two different places for From and To.'; return; }
+    if (!day) { msg.textContent = 'Pick the date you are riding.'; return; }
+    if (!time) { msg.textContent = 'Add the time you are leaving.'; return; }
+    msg.textContent = ''; btn.disabled = true; btn.textContent = 'Posting…';
+    call('offer', { from: from, to: to, date: day, time: time, bike: $('o-bike').value.trim(), helmet: $('o-helmet').checked, women: $('o-women').checked })
+      .then(function () {
+        $('f-from').value = from; $('f-to').value = to; $('f-day').value = day; $('f-window').value = 'any'; $('f-women').checked = false; $('f-all').checked = false;
+        state.filters = { from: from, to: to, date: day, window: 'any', women: false, all: false };
+        toast('Ride posted. Passengers on this route can now book your seat.');
+        setTab('find');
+      })
+      .catch(function (err) { msg.textContent = err.message; })
+      .then(function () { btn.disabled = false; btn.textContent = 'Post this ride'; });
+  });
+
+  document.addEventListener('submit', function (e) {
+    if (e.target.id !== 'auth-form') return;
+    e.preventDefault();
+    var reg = state.authMode === 'register', btn = $('auth-submit');
+    var payload = { phone: $('a-phone').value, pin: $('a-pin').value };
+    if (reg) { payload.name = $('a-name').value; payload.gender = $('a-gender').value; }
+    btn.disabled = true; btn.textContent = reg ? 'Creating…' : 'Logging in…';
+    call(reg ? 'register' : 'login', payload).then(onAuthed).catch(function (err) {
+      if (!$('auth-msg')) return;
+      $('auth-msg').textContent = err.message;
+      btn.disabled = false; btn.textContent = reg ? 'Create account' : 'Log in';
+    });
+  });
+
+  window.addEventListener('hashchange', function () {
+    var h = location.hash.slice(1);
+    if (TABS.indexOf(h) > -1 && h !== state.tab) { state.openBook = null; setTab(h); }
+  });
+
+  // ---------- start ----------
+  function start() {
+    loadSession(); renderWho();
+    $('f-day').min = isoDate(0); $('o-day').min = isoDate(0);
+    $('f-day').value = isoDate(0); $('o-day').value = isoDate(0);
+    var h0 = location.hash.slice(1);
+    if (TABS.indexOf(h0) > -1) state.tab = h0;
+    if (!API_URL) { $('setup-banner').hidden = false; render(); return; }
+    $('results').innerHTML = '<div class="loading">Loading…</div>';
+    call('config').then(function (cfg) {
+      state.cfg = cfg;
+      var ids = cfg.places.map(function (p) { return p.id; });
+      var from = ids.indexOf('n62') > -1 ? 'n62' : ids[0];
+      var to = ids.indexOf('cp') > -1 ? 'cp' : (ids[1] || ids[0]);
+      placeOptions($('f-from'), from); placeOptions($('f-to'), to);
+      placeOptions($('o-from'), from); placeOptions($('o-to'), to);
+      state.filters = { from: from, to: to, date: isoDate(0), window: 'any', women: false, all: false };
+      if ((state.tab === 'offer' || state.tab === 'trips') && !state.session) { state.pending = { tab: state.tab }; state.tab = 'login'; }
+      render();
+    }).catch(function (e) {
+      $('results').innerHTML = '<div class="empty" style="margin-top:24px">' + esc(e.message) + ' <button class="linkbtn" data-action="retry-start">Try again</button></div>';
+    });
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-action="retry-start"]')) start();
+  });
+  start();
+})();
+</script>
+</body>
+</html>
