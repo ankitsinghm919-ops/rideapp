@@ -1,12 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#0A5C50">
-<meta name="description" content="Bambukat: Raasta ek, kharcha aadha. Share the empty seat on your bike and split the fuel cost.">
-<title>Bambukat | Raasta ek, kharcha aadha</title>
+<meta name="description" content="Bambukat is a bike pooling site for Delhi NCR. Share the empty seat on your bike, split the fuel cost and ride together. Raasta ek, kharcha aadha.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bambukat">
+<meta property="og:locale" content="en_IN">
+<meta property="og:title" content="Bambukat | Bike Pooling in Delhi NCR">
+<meta property="og:description" content="Bambukat is a bike pooling site for Delhi NCR. Share the empty seat on your bike, split the fuel cost and ride together. Raasta ek, kharcha aadha.">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bambukat | Bike Pooling in Delhi NCR">
+<meta name="twitter:description" content="Bambukat is a bike pooling site for Delhi NCR. Share the empty seat on your bike, split the fuel cost and ride together. Raasta ek, kharcha aadha.">
+<title>Bambukat | Bike Pooling in Delhi NCR</title>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Bambukat", "alternateName": "Bambukat Bike Pooling", "description": "Bambukat is a bike pooling site for Delhi NCR. Share the empty seat on your bike, split the fuel cost and ride together. Raasta ek, kharcha aadha.", "inLanguage": "en-IN"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Bambukat?", "acceptedAnswer": {"@type": "Answer", "text": "Bambukat is a bike pooling site for Delhi NCR. A rider with an empty seat posts a trip, and a passenger heading the same way asks for it. The passenger shares the fuel cost, and nobody makes a profit."}}, {"@type": "Question", "name": "Is Bambukat free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Posting and requesting rides is free. An optional small support fee can be paid by the rider or the passenger to keep the site running."}}, {"@type": "Question", "name": "How do I pay for a ride?", "acceptedAnswer": {"@type": "Answer", "text": "After the rider approves your request, you pay the rider's fuel share directly by UPI, or as you both agree. Bambukat does not handle that money."}}, {"@type": "Question", "name": "Is it safe to ride with someone new?", "acceptedAnswer": {"@type": "Answer", "text": "Phone numbers and the meeting pin stay hidden until the rider approves you. Riders add a driving licence that shows as a badge, every ride says if a spare helmet is carried, and women riders can offer women-only rides."}}]}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E7C6B'/%3E%3Cg fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='18' cy='43' r='8'/%3E%3Ccircle cx='46' cy='43' r='8'/%3E%3Cpath d='M18 43l11-18h10l9 18M29 25l-3-5h-6M39 25l4 7'/%3E%3C/g%3E%3Cpath d='M44 9c7 0 11 4 11 11-7 0-11-4-11-11z' fill='%238FD9AE'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -263,6 +275,44 @@ dialog .form { margin-top: 12px; }
   .ride { transition: border-color 0.15s, transform 0.15s; }
   .ride:hover { border-color: var(--line-strong); border-left-color: var(--accent); }
 }
+
+/* bell, announcements, SEO text */
+.top { position: relative; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.bell { position: relative; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface); cursor: pointer; display: inline-grid; place-items: center; color: var(--fg); padding: 0; }
+.bell:hover { border-color: var(--fg); }
+.bell .ico { width: 20px; height: 20px; }
+.bell-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--danger); color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; }
+.notif-panel { position: absolute; right: 0; top: calc(100% - 6px); width: min(92vw, 380px); max-height: 70vh; overflow: auto; z-index: 15; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: 0 12px 32px rgba(8, 20, 16, 0.22); }
+.np-head { padding: 12px 14px; border-bottom: 1px solid var(--line); font-family: var(--font-display); }
+.np-pending { display: block; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: var(--warn-bg); color: var(--warn); padding: 10px 14px; font-weight: 600; font-size: 14px; cursor: pointer; }
+.np-item { display: grid; grid-template-columns: 10px 1fr; gap: 2px 10px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 10px 14px; cursor: pointer; }
+.np-item:hover { background: var(--mint); }
+.np-item.unread { background: var(--mint); }
+.np-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; background: transparent; }
+.np-item.unread .np-dot { background: var(--accent); }
+.np-text { font-size: 14px; overflow-wrap: anywhere; }
+.np-time { grid-column: 2; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.np-empty { padding: 16px 14px; font-size: 14px; color: var(--muted); }
+@media (max-width: 480px) { .who .hi { display: none; } }
+
+#announce { display: grid; gap: 10px; margin-top: 16px; }
+#announce:empty { display: none; }
+.announce { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; padding: 14px 16px; border-radius: 12px; background: var(--mint); border: 1px solid var(--mint-strong); border-left: 5px solid var(--accent); }
+.an-body { display: grid; gap: 4px; justify-items: start; min-width: 0; }
+.an-body b { font-family: var(--font-display); font-size: 17px; }
+.an-body p { font-size: 15px; }
+.an-x { border: 0; background: transparent; font-size: 22px; line-height: 1; cursor: pointer; color: var(--muted); padding: 0 4px; }
+.an-x:hover { color: var(--fg); }
+
+.seo { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--line-strong); }
+.seo h2 { font-size: 20px; }
+.seo h3 { font-size: 16px; margin-top: 18px; }
+.seo p { color: var(--muted); font-size: 15px; margin-top: 6px; max-width: 70ch; }
+.routes { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.routes a { display: inline-block; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--accent); font-weight: 600; font-size: 14px; text-decoration: none; }
+.routes a:hover { background: var(--mint); }
+.faq h4 { margin: 14px 0 0; font-family: var(--font-display); font-size: 15px; }
 </style>
 </head>
 <body>
@@ -273,12 +323,13 @@ dialog .form { margin-top: 12px; }
       <b>Bambukat</b>
     </div>
     <div class="who" id="who"></div>
+    <div class="notif-panel" id="notif-panel" role="region" aria-label="Notifications" hidden></div>
   </header>
 
   <section class="hero" aria-label="Bambukat">
     <div class="hero-copy">
       <h1>Raasta ek,<span>kharcha aadha.</span></h1>
-      <p>Share the empty seat on your bike. Split the fuel, skip the traffic.</p>
+      <p>Bike pooling for Delhi NCR. Share the empty seat on your bike, split the fuel, skip the traffic.</p>
       <div class="hero-chips">
         <span><svg class="ico" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Free to use</span>
         <span><svg class="ico" viewBox="0 0 24 24"><path d="M7 5h10M7 9h10M7 5c4 0 6 1.5 6 4s-2 4-6 4l7 6"/></svg>Pay rider by UPI</span>
@@ -321,6 +372,8 @@ dialog .form { margin-top: 12px; }
     </svg>
   </section>
 
+  <section id="announce" aria-label="Announcements"></section>
+
   <div class="banner" id="setup-banner" hidden>
     The site is not connected yet. Open <code>config.js</code>, paste your Apps Script Web app URL, and reload.
   </div>
@@ -330,6 +383,8 @@ dialog .form { margin-top: 12px; }
     <button class="tab" role="tab" id="tab-offer" data-tab="offer" aria-selected="false"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Offer a ride</button>
     <button class="tab" role="tab" id="tab-trips" data-tab="trips" aria-selected="false"><svg class="ico" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 000-7H9a3.5 3.5 0 010-7h6.5"/></svg>My trips</button>
   </nav>
+
+  <noscript><div class="banner">Bambukat needs JavaScript to show and post rides. Please turn it on in your browser.</div></noscript>
 
   <main>
     <section class="panel" id="view-find" aria-labelledby="tab-find">
@@ -435,6 +490,15 @@ dialog .form { margin-top: 12px; }
     </ol>
   </section>
 
+  <section class="seo" aria-labelledby="seo-h">
+    <h2 id="seo-h">Bike pooling in Delhi NCR</h2>
+    <p>Bambukat connects riders who have an empty pillion seat with people travelling the same way between Noida, Greater Noida, Ghaziabad, Delhi and Gurugram. Share the road, split the fuel cost and skip the traffic.</p>
+    <h3>Popular routes</h3>
+    <ul class="routes"><li><a href="#find" data-action="route" data-route="n62:cp">Noida Sec 62 to Connaught Place</a></li><li><a href="#find" data-action="route" data-route="n18:np">Noida Sec 18 to Nehru Place</a></li><li><a href="#find" data-action="route" data-route="ind:cp">Indirapuram to Connaught Place</a></li><li><a href="#find" data-action="route" data-route="vai:av">Vaishali to Anand Vihar</a></li><li><a href="#find" data-action="route" data-route="ncc:gur">Noida City Centre to Cyber Hub, Gurugram</a></li><li><a href="#find" data-action="route" data-route="gn:n62">Greater Noida to Noida Sec 62</a></li></ul>
+    <h3>Common questions</h3>
+    <div class="faq"><h4>What is Bambukat?</h4><p>Bambukat is a bike pooling site for Delhi NCR. A rider with an empty seat posts a trip, and a passenger heading the same way asks for it. The passenger shares the fuel cost, and nobody makes a profit.</p><h4>Is Bambukat free?</h4><p>Yes. Posting and requesting rides is free. An optional small support fee can be paid by the rider or the passenger to keep the site running.</p><h4>How do I pay for a ride?</h4><p>After the rider approves your request, you pay the rider&#39;s fuel share directly by UPI, or as you both agree. Bambukat does not handle that money.</p><h4>Is it safe to ride with someone new?</h4><p>Phone numbers and the meeting pin stay hidden until the rider approves you. Riders add a driving licence that shows as a badge, every ride says if a spare helmet is carried, and women riders can offer women-only rides.</p></div>
+  </section>
+
   <section class="safety" aria-labelledby="safety-h">
     <h2 id="safety-h">Before you ride</h2>
     <ul class="checks">
@@ -487,7 +551,8 @@ dialog .form { margin-top: 12px; }
     tab: 'find', cfg: null, session: null, authMode: 'login', otpSent: false,
     filters: { from: '', to: '', date: '', window: 'any', women: false, all: false },
     openBook: null, pending: null, searchSeq: 0, trips: null, confirmKey: null, lastResult: null,
-    cancelTarget: null, photoDraft: undefined
+    cancelTarget: null, photoDraft: undefined,
+    notifs: { items: [], unread: 0, pending: 0, open: false, loaded: false }
   };
 
   var ICON = {
@@ -499,6 +564,7 @@ dialog .form { margin-top: 12px; }
     clock: '<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     rupee: '<svg class="ico" viewBox="0 0 24 24"><path d="M7 5h10M7 9h10M7 5c4 0 6 1.5 6 4s-2 4-6 4l7 6"/></svg>',
     copy: '<svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg>',
+    bell: '<svg class="ico" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/></svg>',
     user: '<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4-6.5 8-6.5s7 2 8 6.5"/></svg>'
   };
 
@@ -560,6 +626,7 @@ dialog .form { margin-top: 12px; }
   }
   function logout(expired) {
     state.session = null; state.trips = null; state.openBook = null;
+    state.notifs = { items: [], unread: 0, pending: 0, open: false, loaded: false };
     saveSession(); renderWho();
     if (expired) { toast('Please log in again.'); state.pending = { tab: (state.tab === 'login' || state.tab === 'profile') ? 'find' : state.tab }; setTab('login'); }
     else { toast('Logged out.'); setTab('find'); }
@@ -872,6 +939,7 @@ dialog .form { margin-top: 12px; }
       state.trips = d;
       if (d.user && state.session) { state.session.user = d.user; saveSession(); renderWho(); }
       if (state.tab === 'trips') renderTrips();
+      refreshNotifs(false);
     }).catch(function (e) { $('trips').innerHTML = '<div class="empty">' + esc(e.message) + ' <button class="linkbtn" data-action="retry">Try again</button></div>'; });
   }
 
@@ -989,6 +1057,7 @@ dialog .form { margin-top: 12px; }
     var next = state.pending; state.pending = null;
     if (next && next.bookId) state.openBook = next.bookId;
     setTab(next ? next.tab : 'find');
+    refreshNotifs(false);
   }
 
   function sendCode() {
@@ -1015,12 +1084,118 @@ dialog .form { margin-top: 12px; }
       .then(function () { if ($('auth-submit')) { $('auth-submit').disabled = false; $('auth-submit').textContent = authLabel(); } });
   }
 
+  // ---------- bell: new requests and updates ----------
+  function relTime(iso) {
+    var m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+    if (m < 1) return 'just now';
+    if (m < 60) return m + ' min ago';
+    if (m < 1440) return Math.round(m / 60) + ' h ago';
+    return Math.round(m / 1440) + ' d ago';
+  }
+  function renderNotifPanel() {
+    var box = $('notif-panel'), n = state.notifs;
+    if (!n.open || !state.session) { box.hidden = true; return; }
+    var html = '<div class="np-head"><b>Notifications</b></div>';
+    if (n.pending) html += '<button class="np-pending" data-action="notif-go">' + n.pending + (n.pending === 1 ? ' request is' : ' requests are') + ' waiting for your answer. Open My trips</button>';
+    if (n.items.length) {
+      html += n.items.map(function (i) {
+        return '<button class="np-item' + (i.unread ? ' unread' : '') + '" data-action="notif-go"><span class="np-dot"></span><span class="np-text">' + esc(i.text) + '</span><span class="np-time">' + esc(relTime(i.at)) + '</span></button>';
+      }).join('');
+    } else {
+      html += '<p class="np-empty">Nothing yet. Seat requests and updates on your rides show up here.</p>';
+    }
+    box.innerHTML = html; box.hidden = false;
+  }
+  function refreshNotifs(silent) {
+    if (!state.session || !API_URL) return Promise.resolve();
+    return call('notifications').then(function (d) {
+      var n = state.notifs, prev = n.unread, was = n.loaded;
+      if (n.open) return; // keep the open panel steady
+      n.items = d.items; n.unread = d.unread; n.pending = d.pending; n.loaded = true;
+      renderWho();
+      if (silent && was && d.unread > prev) toast('New update. Tap the bell to see it.');
+    }).catch(function () {});
+  }
+  function closeBell() {
+    state.notifs.open = false; renderWho(); renderNotifPanel();
+  }
+  function toggleBell() {
+    var n = state.notifs;
+    if (n.open) { closeBell(); return; }
+    n.open = true; renderWho(); renderNotifPanel();
+    call('notifications').then(function (d) {
+      n.items = d.items; n.unread = d.unread; n.pending = d.pending; n.loaded = true;
+      renderNotifPanel();
+      if (d.unread) return call('markSeen').then(function () { n.unread = 0; renderWho(); });
+    }).catch(function () {});
+  }
+
+  // ---------- homepage announcements (edited in the Sheet) ----------
+  function dismissedAnn() {
+    try { return JSON.parse(localStorage.getItem('bambukat.dismissed') || '[]'); } catch (e) { return []; }
+  }
+  function annKey(a) {
+    var t = a.id + '|' + a.title + '|' + a.message, h = 5381;
+    for (var i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0;
+    return a.id + ':' + (h >>> 0).toString(36);
+  }
+  function renderAnnouncements(list) {
+    var gone = dismissedAnn();
+    $('announce').innerHTML = (list || []).filter(function (a) { return gone.indexOf(annKey(a)) < 0; }).map(function (a) {
+      var link = '';
+      if (a.linkUrl && a.linkText) {
+        link = a.linkUrl.charAt(0) === '#'
+          ? '<a class="btn primary small" href="' + esc(a.linkUrl) + '">' + esc(a.linkText) + '</a>'
+          : '<a class="btn primary small" href="' + esc(a.linkUrl) + '" target="_blank" rel="noopener noreferrer">' + esc(a.linkText) + '</a>';
+      }
+      return '<div class="announce" role="note"><div class="an-body"><b>' + esc(a.title) + '</b><p>' + esc(a.message) + '</p>' + link +
+        '</div><button class="an-x" data-action="ann-dismiss" data-key="' + esc(annKey(a)) + '" aria-label="Dismiss">&times;</button></div>';
+    }).join('');
+  }
+  function dismissAnn(key) {
+    var gone = dismissedAnn(); gone.push(key);
+    try { localStorage.setItem('bambukat.dismissed', JSON.stringify(gone.slice(-30))); } catch (e) {}
+    renderAnnouncements(state.cfg ? state.cfg.announcements : []);
+  }
+
+  // Popular-route links in the SEO section fill in the search.
+  function applyRoute(r) {
+    var p = String(r || '').split(':');
+    if (state.cfg && p.length === 2) {
+      var ids = state.cfg.places.map(function (x) { return x.id; });
+      if (ids.indexOf(p[0]) > -1 && ids.indexOf(p[1]) > -1) {
+        $('f-from').value = p[0]; $('f-to').value = p[1];
+        state.filters.from = p[0]; state.filters.to = p[1]; state.openBook = null;
+      }
+    }
+    setTab('find');
+  }
+
+  // Tells search engines and share cards the real address of the page.
+  function setCanonical() {
+    try {
+      if (!/^https?:/.test(location.protocol)) return;
+      var url = location.origin + location.pathname;
+      var l = document.querySelector('link[rel="canonical"]');
+      if (!l) { l = document.createElement('link'); l.rel = 'canonical'; document.head.appendChild(l); }
+      l.href = url;
+      var og = document.querySelector('meta[property="og:url"]');
+      if (og) og.setAttribute('content', url);
+    } catch (e) {}
+  }
+
   // ---------- chrome around the page ----------
   function renderWho() {
-    if (!state.session) { $('who').innerHTML = '<button class="btn small" data-action="go-login">Log in</button>'; return; }
-    var u = state.session.user;
-    $('who').innerHTML = '<button class="avatar-btn" data-action="go-profile" aria-label="Your profile">' + avatarHtml(u.photo, u.name) + '</button>' +
-      '<span>Hi, <b>' + esc(u.name.split(' ')[0]) + '</b></span><button class="btn small" data-action="logout">Log out</button>';
+    if (!state.session) {
+      $('who').innerHTML = '<button class="btn small" data-action="go-login">Log in</button>';
+      $('notif-panel').hidden = true;
+      return;
+    }
+    var u = state.session.user, n = state.notifs.unread;
+    $('who').innerHTML = '<button class="bell" data-action="bell" aria-label="Notifications' + (n ? ', ' + n + ' new' : '') + '" aria-expanded="' + state.notifs.open + '">' + ICON.bell +
+      (n ? '<span class="bell-badge">' + (n > 9 ? '9+' : n) + '</span>' : '') + '</button>' +
+      '<button class="avatar-btn" data-action="go-profile" aria-label="Your profile">' + avatarHtml(u.photo, u.name) + '</button>' +
+      '<span class="hi">Hi, <b>' + esc(u.name.split(' ')[0]) + '</b></span><button class="btn small" data-action="logout">Log out</button>';
   }
 
   function renderOfferPreview() {
@@ -1133,6 +1308,10 @@ dialog .form { margin-top: 12px; }
     } else if (act === 'offer-this') {
       $('o-from').value = state.filters.from; $('o-to').value = state.filters.to; $('o-day').value = state.filters.date;
       setTab('offer');
+    } else if (act === 'bell') { toggleBell();
+    } else if (act === 'notif-go') { closeBell(); setTab('trips');
+    } else if (act === 'ann-dismiss') { dismissAnn(el.getAttribute('data-key'));
+    } else if (act === 'route') { e.preventDefault(); applyRoute(el.getAttribute('data-route'));
     } else if (act === 'photo-remove') {
       state.photoDraft = ''; renderProfileAvatarOnly();
     } else if (act === 'go-profile') { setTab('profile'); }
@@ -1269,6 +1448,7 @@ dialog .form { margin-top: 12px; }
 
   // ---------- start ----------
   function start() {
+    setCanonical();
     loadSession(); renderWho();
     $('f-day').min = isoDate(0); $('o-day').min = isoDate(0);
     $('f-day').value = isoDate(0); $('o-day').value = isoDate(0);
@@ -1278,6 +1458,8 @@ dialog .form { margin-top: 12px; }
     $('results').innerHTML = '<div class="loading">Loading…</div>';
     call('config').then(function (cfg) {
       state.cfg = cfg;
+      renderAnnouncements(cfg.announcements);
+      refreshNotifs(false);
       var ids = cfg.places.map(function (p) { return p.id; });
       var from = ids.indexOf('n62') > -1 ? 'n62' : ids[0];
       var to = ids.indexOf('cp') > -1 ? 'cp' : (ids[1] || ids[0]);
@@ -1294,6 +1476,13 @@ dialog .form { margin-top: 12px; }
     if (e.target.closest('[data-action="retry-start"]')) start();
   });
   start();
+
+  // Close the bell when tapping elsewhere. Check for new requests every 90 seconds while the tab is visible.
+  document.addEventListener('click', function (e) {
+    if (state.notifs.open && !e.target.closest('#notif-panel') && !e.target.closest('.bell')) closeBell();
+  });
+  setInterval(function () { if (state.session && !document.hidden) refreshNotifs(true); }, 90000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) refreshNotifs(true); });
 })();
 </script>
 </body>
