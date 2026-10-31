@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Hind:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: one narrow column. Teal hero, three tabs (find / offer / my trips) and a login view. Ride cards read like a highway sign: time, a dotted route line, then fare. */
+/* Layout: one narrow column. Teal hero, three tabs (find / offer / my trips), plus login and profile views. Ride cards read like a highway sign: time, a dotted route line, then fare. */
 :root {
   color-scheme: light dark;
   --bg: #F1F9F5;
@@ -86,6 +86,10 @@ button, input, select { font: inherit; color: inherit; }
 .brand b { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -0.02em; line-height: 1; }
 .who { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
 .who b { color: var(--fg); font-weight: 600; }
+.avatar-btn { border: 0; background: none; padding: 0; cursor: pointer; border-radius: 50%; display: inline-flex; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--mint); color: var(--accent); display: inline-grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 15px; flex: none; }
+.avatar.lg { width: 84px; height: 84px; font-size: 34px; }
+.avatar.sm { width: 24px; height: 24px; font-size: 12px; }
 
 .hero { position: relative; overflow: hidden; border-radius: 18px; color: #F2FBF6; background: linear-gradient(135deg, #0A5C50 0%, #0E7C6B 58%, #2A9A7D 100%); padding: 24px 22px 0; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 0 12px; align-items: end; }
 .hero-copy { padding-bottom: 24px; align-self: center; }
@@ -138,6 +142,7 @@ button, input, select { font: inherit; color: inherit; }
 .switch { margin-top: 14px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
 .otp-box { display: grid; gap: 6px; padding: 12px; border-radius: 10px; background: var(--mint); }
 .otp-box .input { letter-spacing: 0.35em; font-family: var(--font-mono); font-size: 20px; max-width: 220px; }
+.opt { font-weight: 400; text-transform: none; letter-spacing: 0; }
 
 .btn { padding: 10px 16px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--fg); font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
 .btn:hover { border-color: var(--fg); }
@@ -155,6 +160,10 @@ button, input, select { font: inherit; color: inherit; }
 .group > h3 { font-size: 15px; display: flex; align-items: center; gap: 7px; color: var(--accent); }
 .group .field > label { color: var(--muted); }
 
+/* profile */
+.pf-photo { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.pf-photo .btns { display: grid; gap: 8px; justify-items: start; }
+
 /* ride cards */
 .result-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin: 24px 0 10px; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
 .subhead { margin: 24px 0 10px; font-size: 17px; }
@@ -165,6 +174,7 @@ button, input, select { font: inherit; color: inherit; }
 
 .ride { background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--mint-strong); border-radius: 12px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; }
 .ride.past { opacity: 0.7; border-left-color: var(--line-strong); }
+.ride.compact { padding: 10px 14px; gap: 6px 14px; align-items: center; }
 .ride-main { min-width: 0; display: grid; gap: 10px; }
 .time { font-family: var(--font-display); font-weight: 700; font-size: 26px; line-height: 1; letter-spacing: -0.01em; }
 .time small { font-size: 14px; font-weight: 600; margin-left: 2px; }
@@ -178,7 +188,7 @@ button, input, select { font: inherit; color: inherit; }
 .spot { display: flex; align-items: flex-start; gap: 6px; font-size: 14px; color: var(--fg); overflow-wrap: anywhere; }
 .spot .ico { color: var(--accent); margin-top: 2px; }
 .spot a { color: var(--accent); font-weight: 600; }
-.rider { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 14px; color: var(--muted); }
+.rider { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 14px; color: var(--muted); }
 .rider b { color: var(--fg); font-weight: 600; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line-strong); color: var(--muted); }
@@ -192,6 +202,10 @@ button, input, select { font: inherit; color: inherit; }
 .contact { font-size: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding-top: 10px; border-top: 1px dashed var(--line-strong); }
 .contact a.tel { color: var(--accent); font-weight: 600; font-family: var(--font-mono); text-decoration: none; }
 .contact a.share { color: var(--muted); }
+.reason { font-size: 13px; padding: 8px 10px; border-radius: 8px; background: var(--warn-bg); color: var(--warn); overflow-wrap: anywhere; }
+.rate { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 14px; padding-top: 10px; border-top: 1px dashed var(--line-strong); }
+.star { border: 1px solid var(--line-strong); background: var(--surface); border-radius: 8px; width: 38px; height: 38px; cursor: pointer; font-size: 17px; color: var(--accent); }
+.star:hover { background: var(--mint); }
 
 .book { grid-column: 1 / -1; border-top: 1px dashed var(--line-strong); padding-top: 14px; display: grid; gap: 12px; }
 dl.sum { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; margin: 0; max-width: 380px; font-size: 15px; }
@@ -211,6 +225,12 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
 .pay-id { font-family: var(--font-mono); font-size: 14px; padding: 4px 8px; border-radius: 6px; background: var(--surface); overflow-wrap: anywhere; }
 .pay img.qr { width: 160px; height: 160px; object-fit: contain; border-radius: 8px; background: #fff; padding: 6px; border: 1px solid var(--line); }
 .pay.fee { background: transparent; border: 1px dashed var(--line-strong); }
+
+/* cancel dialog */
+dialog { border: 1px solid var(--line-strong); border-radius: 14px; background: var(--surface); color: var(--fg); padding: 20px; width: min(92vw, 420px); }
+dialog::backdrop { background: rgba(8, 20, 16, 0.55); }
+dialog h3 { font-size: 20px; }
+dialog .form { margin-top: 12px; }
 
 @media (max-width: 560px) {
   .ride { grid-template-columns: minmax(0, 1fr); }
@@ -341,6 +361,7 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
           <div class="field"><label for="o-to">To</label><select class="input" id="o-to"></select></div>
           <div class="field"><label for="o-day">Date</label><input class="input" type="date" id="o-day" required></div>
           <div class="field"><label for="o-time">Leaving at</label><input class="input" type="time" id="o-time" value="08:30" required></div>
+          <div class="field"><label for="o-eta">Reach destination by <span class="opt">(optional)</span></label><input class="input" type="time" id="o-eta"><span class="hint">Helps passengers plan. Leave empty if unsure.</span></div>
           <div class="field"><label for="o-bike">Your bike</label><input class="input" type="text" id="o-bike" value="" placeholder="Honda Shine" maxlength="40"></div>
         </div>
 
@@ -355,8 +376,12 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
         </div>
 
         <div class="group">
-          <h3><svg class="ico" viewBox="0 0 24 24"><path d="M7 5h10M7 9h10M7 5c4 0 6 1.5 6 4s-2 4-6 4l7 6"/></svg>Get paid</h3>
-          <div class="field"><label for="o-upi">Your UPI ID</label><input class="input" type="text" id="o-upi" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="70" placeholder="name@okhdfcbank"><span class="hint">Passengers pay you the fuel share here, only after you approve them.</span></div>
+          <h3><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>Your details</h3>
+          <div class="fields" style="grid-template-columns:1fr">
+            <div class="field"><label for="o-dl">Driving licence number</label><input class="input" type="text" id="o-dl" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="DL1420110012345"><span class="hint" id="o-dl-hint">Needed once. Passengers see a badge, never the number.</span></div>
+            <div class="field"><label for="o-upi">Your UPI ID <span class="opt">(optional)</span></label><input class="input" type="text" id="o-upi" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="70" placeholder="name@okhdfcbank"><span class="hint">If you skip it, passengers are told to ask you how to pay. Shown only after you approve them.</span></div>
+          </div>
+          <label class="check" for="o-fee" id="o-fee-wrap" hidden><input type="checkbox" id="o-fee"> <span id="o-fee-text">I will pay the Bambukat support fee for this ride (optional)</span></label>
         </div>
 
         <div class="actions">
@@ -372,6 +397,28 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     <section class="panel" id="view-trips" aria-labelledby="tab-trips" hidden>
       <h2>My trips</h2>
       <div id="trips"></div>
+    </section>
+
+    <section class="panel auth" id="view-profile" hidden>
+      <h2>Your profile</h2>
+      <p class="lede" id="pf-lede"></p>
+      <form class="form" id="profile-form" autocomplete="off">
+        <div class="pf-photo">
+          <div id="pf-avatar"></div>
+          <div class="btns">
+            <label class="btn small" for="pf-file">Choose photo</label>
+            <input type="file" id="pf-file" accept="image/*" hidden>
+            <button type="button" class="btn small" data-action="photo-remove">Remove photo</button>
+            <span class="small-note">Shown on rides you offer and requests you send.</span>
+          </div>
+        </div>
+        <div class="fields" style="grid-template-columns:1fr">
+          <div class="field"><label for="pf-dl">Driving licence number</label><input class="input" type="text" id="pf-dl" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24"><span class="hint" id="pf-dl-hint"></span></div>
+          <div class="field"><label for="pf-upi">UPI ID <span class="opt">(optional)</span></label><input class="input" type="text" id="pf-upi" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="70" placeholder="name@okhdfcbank"></div>
+        </div>
+        <p class="msg" id="pf-msg" role="alert"></p>
+        <div class="actions"><button type="submit" class="btn primary" id="pf-save">Save profile</button></div>
+      </form>
     </section>
 
     <section class="panel auth" id="view-login" hidden>
@@ -396,7 +443,7 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
       <li><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M12 14v8M9 18h6"/></svg><h3>Women-only rides</h3><p>Women riders can limit a ride to women passengers, and passengers can filter for those rides.</p></li>
       <li><svg class="ico" viewBox="0 0 24 24"><path d="M7 5h10M7 9h10M7 5c4 0 6 1.5 6 4s-2 4-6 4l7 6"/></svg><h3>Cost sharing only</h3><p>Fares stay near fuel cost, so a ride is not a taxi trip. Pay the rider by UPI after approval.</p></li>
     </ul>
-    <p class="foot">Distances are straight-line estimates plus 30% for roads. Share your trip details with someone you trust before you ride. Before a public launch, check Motor Vehicles Act rules on paid rides in private vehicles and what a two-wheeler insurance policy covers for a pillion passenger.</p>
+    <p class="foot">Distances are straight-line estimates plus 30% for roads. Cancellations close 30 minutes before the ride starts, and a reason is shared with the other person. Share your trip details with someone you trust before you ride. Before a public launch, check Motor Vehicles Act rules on paid rides in private vehicles and what a two-wheeler insurance policy covers for a pillion passenger.</p>
   </section>
 
   <div class="sign">
@@ -404,6 +451,26 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     <span><b>Bambukat</b> · Raasta ek, kharcha aadha</span>
   </div>
 </div>
+
+<dialog id="cancel-dialog" aria-labelledby="cd-title">
+  <h3 id="cd-title">Cancel</h3>
+  <p class="small-note" id="cd-note" style="margin-top:4px"></p>
+  <div class="form">
+    <div class="field"><label for="cd-reason">Reason</label>
+      <select class="input" id="cd-reason">
+        <option value="">Select a reason</option>
+        <option>Change of plans</option>
+        <option>Emergency</option>
+        <option>Vehicle problem</option>
+        <option>Other person is not responding</option>
+        <option>Found another ride</option>
+        <option value="__other">Other</option>
+      </select></div>
+    <div class="field" id="cd-other-wrap" hidden><label for="cd-other">Tell us more</label><input class="input" type="text" id="cd-other" maxlength="120"></div>
+    <p class="msg" id="cd-msg" role="alert"></p>
+    <div class="actions"><button type="button" class="btn danger" id="cd-confirm">Confirm cancel</button><button type="button" class="btn" id="cd-close">Keep it</button></div>
+  </div>
+</dialog>
 
 <div class="toast" id="toast" role="status" hidden></div>
 
@@ -414,12 +481,13 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
   // config.js may still use the old PILLION_API name, both work.
   var API_URL = String(window.BAMBUKAT_API || window.PILLION_API || '').trim();
   var SESSION_KEY = 'bambukat.session';
-  var TABS = ['find', 'offer', 'trips', 'login'];
+  var TABS = ['find', 'offer', 'trips', 'profile', 'login'];
 
   var state = {
     tab: 'find', cfg: null, session: null, authMode: 'login', otpSent: false,
     filters: { from: '', to: '', date: '', window: 'any', women: false, all: false },
-    openBook: null, pending: null, searchSeq: 0, trips: null, confirmKey: null, lastResult: null
+    openBook: null, pending: null, searchSeq: 0, trips: null, confirmKey: null, lastResult: null,
+    cancelTarget: null, photoDraft: undefined
   };
 
   var ICON = {
@@ -451,8 +519,24 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     var p = t.split(':'), h = +p[0];
     return { t: (((h + 11) % 12) + 1) + ':' + p[1], ap: h >= 12 ? 'pm' : 'am' };
   }
+  function fmtTimeStr(t) { var x = fmtTime(t); return x.t + ' ' + x.ap; }
   function fmtPhone(p) { return p && p.length === 10 ? '+91 ' + p.slice(0, 5) + ' ' + p.slice(5) : p; }
   function byTime(a, b) { return a.time < b.time ? -1 : a.time > b.time ? 1 : 0; }
+
+  // ---------- time rules (cancel cutoff, hiding old rides) ----------
+  function startMs(r) {
+    var p = r.date.split('-'), t = r.time.split(':');
+    return new Date(+p[0], +p[1] - 1, +p[2], +t[0], +t[1]).getTime();
+  }
+  function cutoffMin() { return (state.cfg && Number(state.cfg.cancelCutoffMin)) || 30; }
+  function hideAfterHrs() { return (state.cfg && Number(state.cfg.hideAfterHours)) || 24; }
+  function started(r) { return Date.now() >= startMs(r); }
+  function canCancel(r) { return Date.now() < startMs(r) - cutoffMin() * 60000; }
+  function isOld(r) { return Date.now() > startMs(r) + hideAfterHrs() * 3600000; }
+  function feeAmount() {
+    var c = state.cfg;
+    return c && c.feeEnabled !== false && Number(c.platformFee) > 0 ? Number(c.platformFee) : 0;
+  }
 
   function toast(text) {
     var t = $('toast');
@@ -477,7 +561,7 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
   function logout(expired) {
     state.session = null; state.trips = null; state.openBook = null;
     saveSession(); renderWho();
-    if (expired) { toast('Please log in again.'); state.pending = { tab: state.tab === 'login' ? 'find' : state.tab }; setTab('login'); }
+    if (expired) { toast('Please log in again.'); state.pending = { tab: (state.tab === 'login' || state.tab === 'profile') ? 'find' : state.tab }; setTab('login'); }
     else { toast('Logged out.'); setTab('find'); }
   }
 
@@ -522,7 +606,28 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     return { km: km, fare: Math.max(c.minFare, Math.round(km * c.rate / 5) * 5) };
   }
 
+  // ---------- licence helpers ----------
+  function cleanDl(s) { return String(s || '').toUpperCase().replace(/[\s-]/g, ''); }
+  function validDl(s) { return /^[A-Z0-9]{10,20}$/.test(cleanDl(s)); }
+
   // ---------- pieces of HTML ----------
+  function avatarHtml(photo, name, cls) {
+    if (photo) return '<img class="avatar ' + (cls || '') + '" src="' + esc(photo) + '" alt="" loading="lazy">';
+    return '<span class="avatar ' + (cls || '') + '" aria-hidden="true">' + esc(String(name || '?').trim().charAt(0).toUpperCase()) + '</span>';
+  }
+  function ratingChip(rating, count) {
+    if (!count) return '<span class="chip">New rider</span>';
+    return '<span class="chip">★ ' + Number(rating).toFixed(1) + ' (' + count + ')</span>';
+  }
+  // status: 'verified' (admin checked), 'added' (number given, not checked), or empty.
+  function dlChip(status) {
+    if (status === true) status = 'verified';
+    if (status === 'verified') return '<span class="chip ok">' + ICON.shield + 'DL verified</span>';
+    if (status === 'added') return '<span class="chip">DL added, not checked</span>';
+    return '<span class="chip warn">DL not added</span>';
+  }
+  function trustChips(rating, count, dl) { return [ratingChip(rating, count), dlChip(dl)]; }
+
   function chipsHtml(r, extra) {
     var c = [];
     c.push(r.helmet ? '<span class="chip ok">' + ICON.helmet + 'Spare helmet</span>' : '<span class="chip warn">' + ICON.helmet + 'Bring your helmet</span>');
@@ -531,7 +636,8 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     return '<div class="chips">' + c.join('') + '</div>';
   }
   function routeHtml(r) {
-    return '<div class="route"><div class="stop">' + esc(r.from.name) + '</div><div class="leg">' + r.km + ' km</div><div class="stop dest">' + esc(r.to.name) + '</div></div>';
+    var leg = r.km + ' km' + (r.eta ? ' · reach by ' + esc(fmtTimeStr(r.eta)) : '');
+    return '<div class="route"><div class="stop">' + esc(r.from.name) + '</div><div class="leg">' + leg + '</div><div class="stop dest">' + esc(r.to.name) + '</div></div>';
   }
   function whenHtml(r) {
     var tm = fmtTime(r.time);
@@ -544,12 +650,15 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     else if (r.hasMap) parts.push('<span class="small-note">Map pin after approval</span>');
     return parts.length ? '<div class="spot">' + ICON.pin + '<span>' + parts.join(' · ') + '</span></div>' : '';
   }
+  function riderRow(name, photo, bike) {
+    return '<div class="rider">' + avatarHtml(photo, name, 'sm') + '<b>' + esc(name) + '</b><span>' + esc(bike) + '</span></div>';
+  }
   function phoneLink(p) { return '<a class="tel" href="tel:+91' + esc(p) + '">' + esc(fmtPhone(p)) + '</a>'; }
-  function kycChip() { return '<span class="chip">' + ICON.shield + 'KYC verified</span>'; }
 
   function rideCard(r) {
     var open = state.openBook === r.id;
     var aside, panel = '';
+    var fee = feeAmount();
     if (r.mine) {
       aside = '<div><div class="fare">' + rs(r.fare) + '</div><div class="fare-note">per seat</div></div><span class="chip">Your ride</span>';
     } else if (r.myBooking) {
@@ -560,18 +669,18 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
         '<div><div class="seat">1 seat left</div><button class="btn primary small" data-action="book" data-id="' + esc(r.id) + '">Request seat</button></div>';
     }
     if (open && !r.mine && !r.myBooking) {
-      var cfg = state.cfg, feeOn = cfg && cfg.feeEnabled;
       panel = '<div class="book"><dl class="sum"><dt>Rider\'s fuel share</dt><dd id="sum-fare" data-fare="' + r.fare + '">' + rs(r.fare) + '</dd>' +
-        (feeOn ? '<dt>Bambukat support (optional)</dt><dd id="sum-fee">' + rs(0) + '</dd>' : '') +
+        (fee ? '<dt>Bambukat support fee (optional)</dt><dd id="sum-fee">' + rs(0) + '</dd>' : '') +
         '<dt class="total">You pay</dt><dd class="total" id="sum-total">' + rs(r.fare) + '</dd></dl>' +
-        (feeOn ? '<label class="check" for="b-fee"><input type="checkbox" id="b-fee" data-fee="' + cfg.platformFee + '"> Add ' + rs(cfg.platformFee) + ' to keep Bambukat running (optional)</label>' : '') +
-        '<p class="small-note">The rider has to approve your request first. After that you will see the number, the meeting pin and the rider\'s UPI ID. ' + (r.helmet ? 'The rider carries a spare helmet.' : 'This rider has no spare helmet. Bring your own.') + '</p>' +
+        (fee ? '<label class="check" for="b-fee"><input type="checkbox" id="b-fee" data-fee="' + fee + '"> I will pay the ' + rs(fee) + ' Bambukat support fee (optional)</label>' : '') +
+        '<p class="small-note">The rider has to approve your request first. After that you will see the number, the meeting pin and the rider\'s payment details. ' + (r.helmet ? 'The rider carries a spare helmet.' : 'This rider has no spare helmet. Bring your own.') + ' You can cancel until ' + cutoffMin() + ' minutes before the ride.</p>' +
         '<div class="actions"><button class="btn primary" data-action="confirm" data-id="' + esc(r.id) + '">Send request</button><button class="btn" data-action="dismiss">Not now</button></div></div>';
     }
-    var who = r.mine ? '<b>You</b>' : '<b>' + esc(r.riderName) + '</b>';
-    var extra = r.riderKyc ? [kycChip()] : [];
+    var who = r.mine ? riderRow('You', r.riderPhoto, r.bike) : riderRow(r.riderName, r.riderPhoto, r.bike);
+    var extra = trustChips(r.riderRating, r.riderRatingCount, r.riderDl || (r.riderKyc ? 'verified' : ''));
+    if (fee && !r.mine) extra.push('<span class="chip">' + ICON.rupee + 'Optional ' + rs(fee) + ' support fee</span>');
     return '<article class="ride"><div class="ride-main">' + whenHtml(r) + routeHtml(r) + spotHtml(r) +
-      '<div class="rider">' + who + '<span>' + esc(r.bike) + '</span></div>' + chipsHtml(r, extra) + '</div>' +
+      who + chipsHtml(r, extra) + '</div>' +
       '<div class="ride-aside">' + aside + '</div>' + panel + '</article>';
   }
 
@@ -630,17 +739,41 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     if (s === 'cancelled') return '<span class="chip warn">Cancelled</span>';
     if (s === 'rider_cancelled') return '<span class="chip warn">Cancelled by rider</span>';
     if (s === 'booked') return past ? '<span class="chip">Completed</span>' : '<span class="chip ok">' + ICON.check + 'Seat booked</span>';
+    if (s === 'cancelled_ride') return '<span class="chip warn">Cancelled</span>';
     return past ? '<span class="chip">Expired</span>' : '<span class="chip">Seat open</span>';
   }
-  function cancelBtn(key, id, label) {
-    var armed = state.confirmKey === key + ':' + id;
-    return '<button class="btn small danger" data-action="' + key + '" data-id="' + esc(id) + '">' + (armed ? 'Tap again to cancel' : label) + '</button>';
+  function withdrawBtn(id) {
+    var armed = state.confirmKey === 'withdraw:' + id;
+    return '<button class="btn small danger" data-action="withdraw" data-id="' + esc(id) + '">' + (armed ? 'Tap again to withdraw' : 'Withdraw request') + '</button>';
+  }
+  function reasonBtn(kind, id, label) {
+    return '<button class="btn small danger" data-action="cancel-reason" data-kind="' + kind + '" data-id="' + esc(id) + '">' + esc(label) + '</button>';
+  }
+  function closedNote() {
+    return '<span class="small-note">Cancellation closed ' + cutoffMin() + ' min before start</span>';
   }
   function copyBtn(text, label) {
     return '<button class="btn small" data-action="copy" data-text="' + esc(text) + '">' + ICON.copy + esc(label || 'Copy') + '</button>';
   }
   function upiLink(upi, name, amount, note) {
     return 'upi://pay?pa=' + encodeURIComponent(upi) + '&pn=' + encodeURIComponent(name || 'Bambukat') + '&am=' + encodeURIComponent(amount) + '&cu=INR&tn=' + encodeURIComponent(note);
+  }
+  function compactCard(r, status, fare) {
+    return '<article class="ride compact past"><div class="ride-main"><div class="rider"><b>' + esc(dayLabel(r.date)) + ' · ' + esc(fmtTimeStr(r.time)) + '</b><span>' +
+      esc(r.from.name) + ' → ' + esc(r.to.name) + '</span></div></div><div class="ride-aside" style="flex-direction:row;align-items:center">' +
+      statusChip(status, true) + '<span class="mono small-note">' + rs(fare) + '</span></div></article>';
+  }
+
+  // The optional Bambukat support fee, shown to whoever chose to pay it.
+  function feeHtml(f) {
+    if (!f) return '';
+    var h = '<div class="pay fee"><h4>' + ICON.rupee + 'Bambukat support fee ' + rs(f.amount) + ' (optional)</h4><div class="pay-row">';
+    if (f.upi) h += '<span class="pay-id">' + esc(f.upi) + '</span><a class="btn small" href="' + esc(upiLink(f.upi, f.name || 'Bambukat', f.amount, 'Bambukat support')) + '">Pay with UPI app</a>' + copyBtn(f.upi, 'Copy UPI ID');
+    if (f.phone) h += '<span class="small-note">Number: <b class="mono">' + esc(f.phone) + '</b></span>';
+    h += '</div>';
+    if (f.qr) h += '<img class="qr" src="' + esc(f.qr) + '" alt="Payment QR for Bambukat support" loading="lazy">';
+    h += '<p class="small-note">Thank you. This keeps the site free for everyone.</p></div>';
+    return h;
   }
 
   // Shown to a confirmed passenger: pay the rider, and optionally the platform fee.
@@ -651,18 +784,15 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
         '<a class="btn primary small" href="' + esc(upiLink(rider.upi, rider.name, b.fare, 'Bambukat ride')) + '">Pay with UPI app</a>' + copyBtn(rider.upi, 'Copy UPI ID') + '</div>' +
         '<p class="small-note">Pay when you meet or before, as you both agreed. Bambukat does not touch this money.</p></div>';
     } else if (rider) {
-      h += '<div class="pay"><h4>' + ICON.rupee + 'Pay ' + esc(rider.name) + ' ' + rs(b.fare) + '</h4><p class="small-note">This rider has not added a UPI ID. Ask them on the number above.</p></div>';
+      h += '<div class="pay"><h4>' + ICON.rupee + 'Pay ' + esc(rider.name) + ' ' + rs(b.fare) + '</h4><p class="small-note">This rider has not added a UPI ID. Ask them how they want to be paid, on the number above.</p></div>';
     }
-    var f = b.feePay;
-    if (f) {
-      h += '<div class="pay fee"><h4>' + ICON.rupee + 'Bambukat support ' + rs(f.amount) + ' (optional)</h4><div class="pay-row">';
-      if (f.upi) h += '<span class="pay-id">' + esc(f.upi) + '</span><a class="btn small" href="' + esc(upiLink(f.upi, f.name || 'Bambukat', f.amount, 'Bambukat support')) + '">Pay with UPI app</a>' + copyBtn(f.upi, 'Copy UPI ID');
-      if (f.phone) h += '<span class="small-note">Number: <b class="mono">' + esc(f.phone) + '</b></span>';
-      h += '</div>';
-      if (f.qr) h += '<img class="qr" src="' + esc(f.qr) + '" alt="Payment QR for Bambukat support" loading="lazy">';
-      h += '<p class="small-note">Thank you. This keeps the site free for everyone.</p></div>';
-    }
-    return h;
+    return h + feeHtml(b.feePay);
+  }
+
+  function starsHtml(id) {
+    var s = '';
+    for (var i = 1; i <= 5; i++) s += '<button class="star" data-action="rate" data-id="' + esc(id) + '" data-stars="' + i + '" aria-label="' + i + ' star' + (i > 1 ? 's' : '') + '">' + i + '★</button>';
+    return '<div class="rate"><span>Rate this ride:</span>' + s + '</div>';
   }
 
   function renderTrips() {
@@ -671,22 +801,31 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     var t = state.trips, html = '<h3 class="subhead">Seats you asked for</h3>';
     if (t.bookings.length) {
       html += '<div class="list">' + t.bookings.map(function (b) {
-        var r = b.ride, ok = b.status === 'confirmed', live = (ok || b.status === 'pending') && !r.past;
+        var r = b.ride, ok = b.status === 'confirmed', pend = b.status === 'pending';
+        if (r.past && isOld(r)) return compactCard(r, b.status, b.fare);
         var contact = '';
         if (ok && b.rider) {
-          var share = 'My Bambukat ride: ' + r.from.name + ' to ' + r.to.name + ', ' + dayLabel(r.date) + ' ' + fmtTime(r.time).t + ' ' + fmtTime(r.time).ap +
+          var share = 'My Bambukat ride: ' + r.from.name + ' to ' + r.to.name + ', ' + dayLabel(r.date) + ' ' + fmtTimeStr(r.time) +
             ', with ' + b.rider.name + ' (' + fmtPhone(b.rider.phone) + '), ' + r.bike + '.' + (r.mapLink ? ' Meeting point: ' + r.mapLink : '');
           contact = '<div class="contact"><span>Rider ' + esc(b.rider.name) + '</span>' + phoneLink(b.rider.phone) +
             '<a class="share" href="https://wa.me/?text=' + encodeURIComponent(share) + '" target="_blank" rel="noopener">Share trip on WhatsApp</a></div>';
         }
         var extra = [statusChip(b.status, r.past)];
-        if (b.rider && b.rider.kyc) extra.push(kycChip());
+        if (b.rider) extra = extra.concat(trustChips(b.rider.rating, b.rider.ratingCount, b.rider.dl || (b.rider.kyc ? 'verified' : '')));
         var pay = ok && !r.past ? payHtml(b) : '';
-        var note = b.status === 'pending' ? 'if approved' : ok ? 'fuel share' : '';
-        return '<article class="ride' + (r.past || !(ok || b.status === 'pending') ? ' past' : '') + '"><div class="ride-main">' + whenHtml(r) + routeHtml(r) + spotHtml(r) +
-          '<div class="rider"><b>' + esc(b.rider ? b.rider.name : 'Rider') + '</b><span>' + esc(r.bike) + '</span></div>' + chipsHtml(r, extra) + contact + '</div>' +
-          '<div class="ride-aside"><div><div class="fare">' + rs(b.fare) + '</div><div class="fare-note">' + note + '</div></div>' +
-          (live ? '<div>' + cancelBtn('cancel-booking', b.id, b.status === 'pending' ? 'Withdraw request' : 'Cancel booking') + '</div>' : '<span></span>') + '</div>' + pay + '</article>';
+        var note = pend ? 'if approved' : ok ? 'fuel share' : '';
+        var reasonLine = '';
+        if (b.reason && (b.status === 'cancelled' || b.status === 'rider_cancelled')) {
+          reasonLine = '<div class="reason">' + (b.status === 'rider_cancelled' ? 'Rider cancelled' : 'You cancelled') + '. Reason: ' + esc(b.reason) + '</div>';
+        }
+        var rateRow = '';
+        if (ok && r.past) rateRow = b.myRating ? '<div class="rate"><span>You rated this ride ★ ' + esc(b.myRating) + '</span></div>' : starsHtml(b.id);
+        var action = '<span></span>';
+        if (pend && !started(r)) action = '<div>' + withdrawBtn(b.id) + '</div>';
+        else if (ok && !r.past) action = canCancel(r) ? '<div>' + reasonBtn('booking', b.id, 'Cancel booking') + '</div>' : '<div>' + closedNote() + '</div>';
+        return '<article class="ride' + (r.past || !(ok || pend) ? ' past' : '') + '"><div class="ride-main">' + whenHtml(r) + routeHtml(r) + spotHtml(r) +
+          riderRow(b.rider ? b.rider.name : 'Rider', b.rider ? b.rider.photo : '', r.bike) + chipsHtml(r, extra) + reasonLine + contact + rateRow + '</div>' +
+          '<div class="ride-aside"><div><div class="fare">' + rs(b.fare) + '</div><div class="fare-note">' + note + '</div></div>' + action + '</div>' + pay + '</article>';
       }).join('') + '</div>';
     } else {
       html += '<div class="empty">No seats requested yet. <button class="linkbtn" data-action="go-find">Find a ride</button></div>';
@@ -694,21 +833,32 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     html += '<h3 class="subhead">Rides you offered</h3>';
     if (t.offered.length) {
       html += '<div class="list">' + t.offered.map(function (r) {
-        var contact = '', reqs = '';
+        if (r.past && isOld(r)) return compactCard(r, r.status, r.fare);
+        var contact = '', reqs = '', cancelNotes = '';
         if (r.passenger) {
-          contact = '<div class="contact"><span>Passenger ' + esc(r.passenger.name) + '</span>' + phoneLink(r.passenger.phone) + '<span class="small-note">You receive ' + rs(r.passenger.fare) + ' by UPI</span></div>';
+          contact = '<div class="contact"><span>Passenger ' + esc(r.passenger.name) + '</span>' + phoneLink(r.passenger.phone) + '<span class="small-note">Fuel share ' + rs(r.passenger.fare) + ', paid to you directly</span></div>';
         }
         if (r.requests && r.requests.length) {
           reqs = '<div class="reqs"><h4>' + ICON.user + r.requests.length + (r.requests.length === 1 ? ' request' : ' requests') + ' waiting</h4>' + r.requests.map(function (q) {
-            return '<div class="req"><div class="req-who"><b>' + esc(q.name) + '</b>' + (q.kyc ? kycChip() : '') + '</div><div class="req-act">' +
+            return '<div class="req"><div class="req-who">' + avatarHtml(q.photo, q.name, 'sm') + '<b>' + esc(q.name) + '</b>' + ratingChip(q.rating, q.ratingCount) + '</div><div class="req-act">' +
               '<button class="btn primary small" data-action="approve" data-id="' + esc(q.id) + '">Approve</button>' +
               '<button class="btn small" data-action="decline" data-id="' + esc(q.id) + '">Decline</button></div></div>';
           }).join('') + '<p class="small-note">Approving gives that passenger your number and map pin. Other requests close automatically.</p></div>';
         }
+        (r.cancelEvents || []).forEach(function (c) {
+          cancelNotes += '<div class="reason">Passenger ' + esc(c.name) + ' cancelled. Reason: ' + esc(c.reason) + '</div>';
+        });
+        var affected = !!(r.passenger || (r.requests && r.requests.length));
+        var action = '<span></span>';
+        if (!r.past && r.status !== 'cancelled_ride') {
+          if (!affected && !started(r)) action = '<div>' + withdrawBtn('ride:' + r.id) + '</div>';
+          else if (canCancel(r)) action = '<div>' + reasonBtn('ride', r.id, 'Cancel ride') + '</div>';
+          else action = '<div>' + closedNote() + '</div>';
+        }
+        var feePart = !r.past ? feeHtml(r.feePay) : '';
         return '<article class="ride' + (r.past ? ' past' : '') + '"><div class="ride-main">' + whenHtml(r) + routeHtml(r) + spotHtml(r) +
-          '<div class="rider"><b>You</b><span>' + esc(r.bike) + '</span></div>' + chipsHtml(r, [statusChip(r.status, r.past)]) + contact + '</div>' +
-          '<div class="ride-aside"><div><div class="fare">' + rs(r.fare) + '</div><div class="fare-note">per seat</div></div>' +
-          (r.past ? '<span></span>' : '<div>' + cancelBtn('cancel-ride', r.id, 'Cancel ride') + '</div>') + '</div>' + reqs + '</article>';
+          riderRow('You', state.session ? state.session.user.photo : '', r.bike) + chipsHtml(r, [statusChip(r.status, r.past)]) + cancelNotes + contact + '</div>' +
+          '<div class="ride-aside"><div><div class="fare">' + rs(r.fare) + '</div><div class="fare-note">per seat</div></div>' + action + '</div>' + reqs + feePart + '</article>';
       }).join('') + '</div>';
     } else {
       html += '<div class="empty">You have not posted a ride. <button class="linkbtn" data-action="go-offer">Offer a ride</button></div>';
@@ -720,9 +870,73 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     state.trips = null; renderTrips();
     call('myTrips').then(function (d) {
       state.trips = d;
-      if (d.user && state.session) { state.session.user = d.user; saveSession(); }
+      if (d.user && state.session) { state.session.user = d.user; saveSession(); renderWho(); }
       if (state.tab === 'trips') renderTrips();
     }).catch(function (e) { $('trips').innerHTML = '<div class="empty">' + esc(e.message) + ' <button class="linkbtn" data-action="retry">Try again</button></div>'; });
+  }
+
+  // ---------- cancel dialog ----------
+  function openCancel(kind, id) {
+    state.cancelTarget = { kind: kind, id: id };
+    $('cd-title').textContent = kind === 'ride' ? 'Cancel this ride?' : 'Cancel this booking?';
+    $('cd-note').textContent = 'Your reason is shown to the other person.';
+    $('cd-reason').value = ''; $('cd-other').value = ''; $('cd-other-wrap').hidden = true; $('cd-msg').textContent = '';
+    $('cd-confirm').disabled = false; $('cd-confirm').textContent = 'Confirm cancel';
+    var dlg = $('cancel-dialog');
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  function closeCancel() {
+    var dlg = $('cancel-dialog');
+    if (dlg.close) dlg.close(); else dlg.removeAttribute('open');
+    state.cancelTarget = null;
+  }
+  function submitCancel() {
+    var tg = state.cancelTarget; if (!tg) return;
+    var sel = $('cd-reason').value, reason = sel;
+    if (!sel) { $('cd-msg').textContent = 'Select a reason.'; return; }
+    if (sel === '__other') {
+      var o = $('cd-other').value.trim();
+      if (o.length < 3) { $('cd-msg').textContent = 'Write a short reason.'; return; }
+      reason = 'Other: ' + o;
+    }
+    var btn = $('cd-confirm'); btn.disabled = true; btn.textContent = 'Cancelling…';
+    var req = tg.kind === 'ride' ? call('cancelRide', { rideId: tg.id, reason: reason }) : call('cancelBooking', { bookingId: tg.id, reason: reason });
+    req.then(function () { closeCancel(); toast(tg.kind === 'ride' ? 'Ride cancelled.' : 'Booking cancelled.'); loadTrips(); })
+      .catch(function (err) { $('cd-msg').textContent = err.message; btn.disabled = false; btn.textContent = 'Confirm cancel'; });
+  }
+
+  // ---------- profile ----------
+  function resizeImage(file, size) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onerror = function () { reject(new Error('Could not read that image.')); };
+      fr.onload = function () {
+        var img = new Image();
+        img.onerror = function () { reject(new Error('That file is not a usable image.')); };
+        img.onload = function () {
+          var side = Math.min(img.width, img.height), sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+          var cv = document.createElement('canvas'); cv.width = size; cv.height = size;
+          cv.getContext('2d').drawImage(img, sx, sy, side, side, 0, 0, size, size);
+          resolve(cv.toDataURL('image/jpeg', 0.82));
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+  function renderProfile() {
+    var u = state.session ? state.session.user : null; if (!u) return;
+    var photo = state.photoDraft === undefined ? u.photo : state.photoDraft;
+    $('pf-avatar').innerHTML = avatarHtml(photo, u.name, 'lg');
+    $('pf-lede').textContent = u.name + (u.phone ? ' · ' + fmtPhone(u.phone) : '');
+    $('pf-upi').value = u.upi || '';
+    $('pf-dl').value = '';
+    $('pf-dl').placeholder = u.dlMasked || 'DL1420110012345';
+    var st = u.dlStatus || (u.hasDl ? 'added' : '');
+    $('pf-dl-hint').textContent = st === 'verified' ? 'Verified. Passengers see a DL verified badge. Type a new number only to change it.'
+      : st === 'added' ? 'Added, waiting for check. Passengers see a "not checked" badge until then.'
+      : 'Not added yet. You need it to offer rides. Passengers see a badge, never the number.';
+    $('pf-msg').textContent = '';
   }
 
   // ---------- login / register / reset ----------
@@ -752,6 +966,7 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
       html = '<h2>Create your account</h2><p class="lede">Your number stays hidden until a rider approves you.</p>';
       f = field('Your name', 'a-name', '<input class="input" id="a-name" type="text" autocomplete="name" maxlength="40" required>') + phone + email +
         field('Gender', 'a-gender', '<select class="input" id="a-gender" required><option value="">Select</option><option value="female">Female</option><option value="male">Male</option><option value="other">Prefer not to say</option></select>', 'Used only for women-only rides.') +
+        field('Driving licence number <span class="opt">(optional now)</span>', 'a-dl', '<input class="input" id="a-dl" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="DL1420110012345">', 'Add it if you plan to offer rides. You can also add it later in your profile.') +
         field('PIN (4 to 6 digits)', 'a-pin', '<input class="input" id="a-pin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" required>') + otpBox();
     } else {
       html = '<h2>Reset your PIN</h2><p class="lede">Enter the email on your account. We send a code.</p>';
@@ -784,6 +999,7 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     if (mode === 'register') {
       if ($('a-name').value.trim().length < 2) { msg.textContent = 'Enter your name.'; return Promise.resolve(); }
       if (!$('a-gender').value) { msg.textContent = 'Select your gender.'; return Promise.resolve(); }
+      if ($('a-dl').value.trim() && !validDl($('a-dl').value)) { msg.textContent = 'Check the driving licence number, or leave it empty for now.'; return Promise.resolve(); }
       if (!/^\d{4,6}$/.test($('a-pin').value)) { msg.textContent = 'PIN must be 4 to 6 digits.'; return Promise.resolve(); }
     }
     btn.disabled = true; btn.textContent = 'Sending…';
@@ -801,9 +1017,10 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
 
   // ---------- chrome around the page ----------
   function renderWho() {
-    $('who').innerHTML = state.session
-      ? '<span>Hi, <b>' + esc(state.session.user.name.split(' ')[0]) + '</b></span><button class="btn small" data-action="logout">Log out</button>'
-      : '<button class="btn small" data-action="go-login">Log in</button>';
+    if (!state.session) { $('who').innerHTML = '<button class="btn small" data-action="go-login">Log in</button>'; return; }
+    var u = state.session.user;
+    $('who').innerHTML = '<button class="avatar-btn" data-action="go-profile" aria-label="Your profile">' + avatarHtml(u.photo, u.name) + '</button>' +
+      '<span>Hi, <b>' + esc(u.name.split(' ')[0]) + '</b></span><button class="btn small" data-action="logout">Log out</button>';
   }
 
   function renderOfferPreview() {
@@ -811,6 +1028,16 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     if (a === b) { p.textContent = 'Pick two different places.'; return; }
     var e = estimate(a, b);
     p.innerHTML = e ? '<strong>' + e.km + ' km</strong> · fare <strong>' + rs(e.fare) + '</strong> per seat · based on ' + rs(state.cfg.rate) + ' per km fuel cost' : '';
+  }
+
+  function renderOfferExtras() {
+    var u = state.session ? state.session.user : null, fee = feeAmount();
+    var hasDl = !!(u && (u.hasDl || u.dlStatus));
+    $('o-dl').required = !hasDl;
+    $('o-dl').placeholder = hasDl && u.dlMasked ? u.dlMasked : 'DL1420110012345';
+    $('o-dl-hint').textContent = hasDl ? 'Already on your profile. Leave empty to keep it.' : 'Needed once. Passengers see a badge, never the number.';
+    $('o-fee-wrap').hidden = !fee;
+    if (fee) $('o-fee-text').textContent = 'I will pay the ' + rs(fee) + ' Bambukat support fee for this ride (optional)';
   }
 
   function render() {
@@ -821,15 +1048,17 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     });
     if (state.tab === 'find') runSearch();
     if (state.tab === 'offer' && state.cfg) {
-      renderOfferPreview();
+      renderOfferPreview(); renderOfferExtras();
       if (!$('o-upi').value && state.session && state.session.user.upi) $('o-upi').value = state.session.user.upi;
     }
     if (state.tab === 'trips') loadTrips();
+    if (state.tab === 'profile') renderProfile();
     if (state.tab === 'login') renderAuth();
   }
 
   function setTab(t) {
-    if ((t === 'offer' || t === 'trips') && !state.session) { state.pending = { tab: t }; t = 'login'; state.authMode = 'login'; state.otpSent = false; }
+    if ((t === 'offer' || t === 'trips' || t === 'profile') && !state.session) { state.pending = { tab: t }; t = 'login'; state.authMode = 'login'; state.otpSent = false; }
+    if (t === 'profile') state.photoDraft = undefined;
     state.tab = t;
     try { if (location.hash !== '#' + t) location.hash = t; } catch (e) {}
     render();
@@ -871,12 +1100,22 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
       call('decide', { bookingId: id, decision: act })
         .then(function () { toast(act === 'approve' ? 'Approved. The passenger can see your number and pay you now.' : 'Request declined.'); loadTrips(); })
         .catch(function (err) { toast(err.message); loadTrips(); });
-    } else if (act === 'cancel-booking' || act === 'cancel-ride') {
-      var key = act + ':' + id;
+    } else if (act === 'cancel-reason') {
+      openCancel(el.getAttribute('data-kind'), id);
+    } else if (act === 'withdraw') {
+      // Withdrawing a pending request, or cancelling a ride nobody has asked for: no one is affected, so no reason is needed.
+      var key = 'withdraw:' + id;
       if (state.confirmKey !== key) { state.confirmKey = key; renderTrips(); return; }
       state.confirmKey = null; el.disabled = true;
-      call(act === 'cancel-booking' ? 'cancelBooking' : 'cancelRide', act === 'cancel-booking' ? { bookingId: id } : { rideId: id })
-        .then(function () { toast(act === 'cancel-booking' ? 'Booking cancelled.' : 'Ride cancelled.'); loadTrips(); })
+      var isRide = id.indexOf('ride:') === 0, rid = isRide ? id.slice(5) : id;
+      call(isRide ? 'cancelRide' : 'cancelBooking', isRide ? { rideId: rid, reason: 'No bookings' } : { bookingId: rid, reason: 'Request withdrawn' })
+        .then(function () { toast(isRide ? 'Ride cancelled.' : 'Request withdrawn.'); loadTrips(); })
+        .catch(function (err) { toast(err.message); loadTrips(); });
+    } else if (act === 'rate') {
+      var stars = Number(el.getAttribute('data-stars'));
+      el.disabled = true;
+      call('rate', { bookingId: id, stars: stars })
+        .then(function () { toast('Thanks for rating.'); loadTrips(); })
         .catch(function (err) { toast(err.message); loadTrips(); });
     } else if (act === 'copy') {
       copyText(el.getAttribute('data-text') || '');
@@ -894,7 +1133,10 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     } else if (act === 'offer-this') {
       $('o-from').value = state.filters.from; $('o-to').value = state.filters.to; $('o-day').value = state.filters.date;
       setTab('offer');
-    } else if (act === 'go-find') { setTab('find'); }
+    } else if (act === 'photo-remove') {
+      state.photoDraft = ''; renderProfileAvatarOnly();
+    } else if (act === 'go-profile') { setTab('profile'); }
+    else if (act === 'go-find') { setTab('find'); }
     else if (act === 'go-offer') { setTab('offer'); }
     else if (act === 'go-login') { state.pending = { tab: 'find' }; setAuthMode('login'); setTab('login'); }
     else if (act === 'auth-mode') { setAuthMode(el.getAttribute('data-mode')); }
@@ -902,6 +1144,11 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     else if (act === 'logout') { logout(false); }
     else if (act === 'retry') { render(); }
   });
+
+  function renderProfileAvatarOnly() {
+    var u = state.session.user, photo = state.photoDraft === undefined ? u.photo : state.photoDraft;
+    $('pf-avatar').innerHTML = avatarHtml(photo, u.name, 'lg');
+  }
 
   // Live total in the request panel when the optional fee is ticked.
   document.addEventListener('change', function (e) {
@@ -926,21 +1173,59 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
   ['o-from', 'o-to'].forEach(function (id) { $(id).addEventListener('change', function () { if (state.cfg) renderOfferPreview(); }); });
   $('find-form').addEventListener('submit', function (e) { e.preventDefault(); });
 
+  // cancel dialog wiring
+  $('cd-reason').addEventListener('change', function () { $('cd-other-wrap').hidden = this.value !== '__other'; });
+  $('cd-confirm').addEventListener('click', submitCancel);
+  $('cd-close').addEventListener('click', closeCancel);
+  $('cancel-dialog').addEventListener('cancel', function () { state.cancelTarget = null; });
+
+  // profile wiring
+  $('pf-file').addEventListener('change', function () {
+    var file = this.files && this.files[0]; this.value = '';
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { $('pf-msg').textContent = 'Choose an image file.'; return; }
+    resizeImage(file, 256).then(function (data) { state.photoDraft = data; $('pf-msg').textContent = ''; renderProfileAvatarOnly(); })
+      .catch(function (err) { $('pf-msg').textContent = err.message; });
+  });
+  $('profile-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = $('pf-msg'), btn = $('pf-save'), dl = $('pf-dl').value.trim(), upi = $('pf-upi').value.trim();
+    if (dl && !validDl(dl)) { msg.textContent = 'Check the driving licence number. Use letters and digits only.'; return; }
+    if (upi && !/^[a-zA-Z0-9._-]{2,64}@[a-zA-Z][a-zA-Z0-9]{1,30}$/.test(upi)) { msg.textContent = 'That UPI ID looks wrong. Example: name@okhdfcbank. Or leave it empty.'; return; }
+    var payload = { upi: upi };
+    if (dl) payload.dl = cleanDl(dl);
+    if (state.photoDraft !== undefined) payload.photo = state.photoDraft;
+    msg.textContent = ''; btn.disabled = true; btn.textContent = 'Saving…';
+    call('updateProfile', payload).then(function (u) {
+      if (u && state.session) { state.session.user = Object.assign({}, state.session.user, u); }
+      else if (state.session) { state.session.user.upi = upi; if (payload.photo !== undefined) state.session.user.photo = payload.photo; if (dl) state.session.user.hasDl = true; }
+      saveSession(); renderWho(); state.photoDraft = undefined; renderProfile(); toast('Profile saved.');
+    }).catch(function (err) { msg.textContent = err.message; })
+      .then(function () { btn.disabled = false; btn.textContent = 'Save profile'; });
+  });
+
   $('offer-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    var msg = $('offer-msg'), btn = $('offer-submit');
-    var from = $('o-from').value, to = $('o-to').value, day = $('o-day').value, time = $('o-time').value;
-    var landmark = $('o-landmark').value.trim(), map = $('o-map').value.trim(), upi = $('o-upi').value.trim();
+    var msg = $('offer-msg'), btn = $('offer-submit'), u = state.session ? state.session.user : {};
+    var from = $('o-from').value, to = $('o-to').value, day = $('o-day').value, time = $('o-time').value, eta = $('o-eta').value;
+    var landmark = $('o-landmark').value.trim(), map = $('o-map').value.trim(), upi = $('o-upi').value.trim(), dl = $('o-dl').value.trim();
+    var hasDl = !!(u.hasDl || u.dlStatus);
     if (from === to) { msg.textContent = 'Pick two different places for From and To.'; return; }
     if (!day) { msg.textContent = 'Pick the date you are riding.'; return; }
     if (!time) { msg.textContent = 'Add the time you are leaving.'; return; }
+    if (eta && eta <= time) { msg.textContent = 'Arrival time must be after the time you leave.'; return; }
     if (!landmark && !map) { msg.textContent = 'Add a meeting point: type a landmark or paste a Google Maps link.'; return; }
-    if (!/^[a-zA-Z0-9._-]{2,64}@[a-zA-Z][a-zA-Z0-9]{1,30}$/.test(upi)) { msg.textContent = 'Enter your UPI ID, for example name@okhdfcbank.'; return; }
+    if (!hasDl && !dl) { msg.textContent = 'Add your driving licence number to post a ride.'; return; }
+    if (dl && !validDl(dl)) { msg.textContent = 'Check the driving licence number. Use letters and digits only.'; return; }
+    if (upi && !/^[a-zA-Z0-9._-]{2,64}@[a-zA-Z][a-zA-Z0-9]{1,30}$/.test(upi)) { msg.textContent = 'That UPI ID looks wrong. Example: name@okhdfcbank. Or leave it empty.'; return; }
     msg.textContent = ''; btn.disabled = true; btn.textContent = 'Posting…';
-    call('offer', { from: from, to: to, date: day, time: time, bike: $('o-bike').value.trim(), helmet: $('o-helmet').checked, women: $('o-women').checked, landmark: landmark, mapLink: map, upi: upi })
+    var payload = { from: from, to: to, date: day, time: time, eta: eta, bike: $('o-bike').value.trim(), helmet: $('o-helmet').checked, women: $('o-women').checked,
+      landmark: landmark, mapLink: map, upi: upi, feeByRider: !!(feeAmount() && $('o-fee').checked) };
+    if (dl) payload.dl = cleanDl(dl);
+    call('offer', payload)
       .then(function () {
-        if (state.session) { state.session.user.upi = upi; saveSession(); }
-        $('o-landmark').value = ''; $('o-map').value = '';
+        if (state.session) { state.session.user.upi = upi; if (dl) state.session.user.hasDl = true; saveSession(); }
+        $('o-landmark').value = ''; $('o-map').value = ''; $('o-dl').value = ''; $('o-eta').value = ''; $('o-fee').checked = false;
         $('f-from').value = from; $('f-to').value = to; $('f-day').value = day; $('f-window').value = 'any'; $('f-women').checked = false; $('f-all').checked = false;
         state.filters = { from: from, to: to, date: day, window: 'any', women: false, all: false };
         toast('Ride posted. You will get an email when someone asks for your seat.');
@@ -960,7 +1245,9 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
     if (mode === 'login') {
       call_ = call('login', { phone: $('a-phone').value, pin: $('a-pin').value }).then(onAuthed);
     } else if (mode === 'register') {
-      call_ = call('register', { name: $('a-name').value, phone: $('a-phone').value, email: $('a-email').value, gender: $('a-gender').value, pin: $('a-pin').value, otp: $('a-otp').value }).then(onAuthed);
+      var rp = { name: $('a-name').value, phone: $('a-phone').value, email: $('a-email').value, gender: $('a-gender').value, pin: $('a-pin').value, otp: $('a-otp').value };
+      if ($('a-dl').value.trim()) rp.dl = cleanDl($('a-dl').value);
+      call_ = call('register', rp).then(onAuthed);
     } else {
       if (!/^\d{4,6}$/.test($('a-pin').value)) { msg.textContent = 'PIN must be 4 to 6 digits.'; return; }
       call_ = call('resetPin', { email: $('a-email').value, pin: $('a-pin').value, otp: $('a-otp').value }).then(function () {
@@ -997,7 +1284,7 @@ dl.sum .total { font-weight: 600; border-top: 1px solid var(--line-strong); padd
       placeOptions($('f-from'), from); placeOptions($('f-to'), to);
       placeOptions($('o-from'), from); placeOptions($('o-to'), to);
       state.filters = { from: from, to: to, date: isoDate(0), window: 'any', women: false, all: false };
-      if ((state.tab === 'offer' || state.tab === 'trips') && !state.session) { state.pending = { tab: state.tab }; state.tab = 'login'; }
+      if ((state.tab === 'offer' || state.tab === 'trips' || state.tab === 'profile') && !state.session) { state.pending = { tab: state.tab }; state.tab = 'login'; }
       render();
     }).catch(function (e) {
       $('results').innerHTML = '<div class="empty" style="margin-top:24px">' + esc(e.message) + ' <button class="linkbtn" data-action="retry-start">Try again</button></div>';
